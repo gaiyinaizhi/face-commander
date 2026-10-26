@@ -42,72 +42,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/tapLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="23dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Description_Mouse">
-            <TextView
-                android:id="@id/mouseTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select"
-                android:textColor="#3C4043"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="5dp"
-                android:paddingBottom="9dp"
-                android:paddingStart="17dp"
-                android:paddingEnd="17dp"
-                android:background="@drawable/custom_binding_linear"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/tapIcon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginTop="3dp"/>
-
-                <TextView
-                    android:id="@+id/tapTxtLinear"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="4dp"
-                    android:text="Add"
-                    android:textStyle="bold"
-                    android:textSize="13sp" />
-            </LinearLayout>
-            <TextView
-                android:id="@+id/tapBinding"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="#5F6368"
-                android:text="No binding"
-                app:layout_constraintStart_toStartOf="@id/mouseTxt"
-                app:layout_constraintTop_toBottomOf="@+id/mouseTxt" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottomRightTapLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="24dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tapLayout">
+            app:layout_constraintTop_toTopOf="@+id/Description_Mouse">
             <TextView
                 android:id="@+id/bottomRightTapTitle"
                 android:layout_width="wrap_content"
@@ -158,8 +99,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/bottomRightTapTitle" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/swipeUpPageLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -217,14 +157,72 @@
                 app:layout_constraintTop_toBottomOf="@+id/swipeUpPageTitle" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/tapLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="23dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/swipeUpPageLayout">
+            <TextView
+                android:id="@id/mouseTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select"
+                android:textColor="#3C4043"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="5dp"
+                android:paddingBottom="9dp"
+                android:paddingStart="17dp"
+                android:paddingEnd="17dp"
+                android:background="@drawable/custom_binding_linear"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/tapIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="3dp"/>
+
+                <TextView
+                    android:id="@+id/tapTxtLinear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="4dp"
+                    android:text="Add"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/tapBinding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#5F6368"
+                android:text="No binding"
+                app:layout_constraintStart_toStartOf="@id/mouseTxt"
+                app:layout_constraintTop_toBottomOf="@+id/mouseTxt" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+<androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/homeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="24dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/swipeUpPageLayout">
+            app:layout_constraintTop_toBottomOf="@+id/tapLayout">
             <TextView
                 android:id="@id/homeTxt"
                 android:layout_width="wrap_content"
@@ -275,7 +273,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/homeTxt" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/backLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -333,7 +331,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/backTxt" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/notificationLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -391,7 +389,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/notificationTxt" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/pauseLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -449,7 +447,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/pauseTxt" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/resetLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -507,7 +505,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/resetTxt" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/dragLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -565,7 +563,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/dragTxt" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/allAppLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

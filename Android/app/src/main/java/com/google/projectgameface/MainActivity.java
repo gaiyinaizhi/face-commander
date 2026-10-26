@@ -155,6 +155,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        Switch showCursorSwitch = findViewById(R.id.showCursorSwitch);
+        showCursorSwitch.setChecked(ReadingPagerPreferences.isShowCursor(this));
+        showCursorSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            ReadingPagerPreferences.setShowCursor(this, isChecked);
+            sendBroadcast(new Intent(ReadingPagerPreferences.ACTION_APPLY_UI));
+        });
+
+        Switch showCameraPreviewSwitch = findViewById(R.id.showCameraPreviewSwitch);
+        showCameraPreviewSwitch.setChecked(ReadingPagerPreferences.isShowCameraPreview(this));
+        showCameraPreviewSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            ReadingPagerPreferences.setShowCameraPreview(this, isChecked);
+            sendBroadcast(new Intent(ReadingPagerPreferences.ACTION_APPLY_UI));
+        });
+
         if(isFirstLaunch()){
             // Assign some default binding so user can navigate around.
             Log.i(TAG, "First launch, assign default binding");

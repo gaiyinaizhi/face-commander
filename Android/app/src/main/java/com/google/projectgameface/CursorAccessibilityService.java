@@ -70,6 +70,9 @@ public class CursorAccessibilityService extends AccessibilityService implements 
     private static final int IMAGE_ANALYZER_HEIGHT = 400;
     ServiceUiManager serviceUiManager;
     public CursorController cursorController;
+
+    /** Monotonic time of last successfully dispatched face action. */
+    private long lastActionDispatchMs = 0L;
     private FaceLandmarkerHelper facelandmarkerHelper;
     public WindowManager windowManager;
     private Handler tickFunctionHandler;
@@ -88,6 +91,7 @@ public class CursorAccessibilityService extends AccessibilityService implements 
     private BroadcastReceiver loadSharedConfigBasicReceiver;
     private BroadcastReceiver loadSharedConfigGestureReceiver;
     private BroadcastReceiver enableScorePreviewReceiver;
+    private BroadcastReceiver applyReadingPagerUiReceiver;
 
     /** This is state of cursor. */
     public enum ServiceState {
@@ -175,6 +179,14 @@ public class CursorAccessibilityService extends AccessibilityService implements 
                 }
             };
 
+        applyReadingPagerUiReceiver =
+            new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    applyReadingPagerUi();
+                }
+            };
+
         if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
             registerReceiver(
                 changeServiceStateReceiver, new IntentFilter("CHANGE_SERVICE_STATE"), RECEIVER_EXPORTED);
@@ -193,6 +205,10 @@ public class CursorAccessibilityService extends AccessibilityService implements 
             registerReceiver(
                 enableScorePreviewReceiver, new IntentFilter("ENABLE_SCORE_PREVIEW"), RECEIVER_EXPORTED);
             registerReceiver(
+                applyReadingPagerUiReceiver,
+                new IntentFilter(ReadingPagerPreferences.ACTION_APPLY_UI),
+                RECEIVER_EXPORTED);
+            registerReceiver(
                 serviceUiManager.flyInWindowReceiver,
                 new IntentFilter("FLY_IN_FLOAT_WINDOW"),
                 RECEIVER_EXPORTED);
@@ -207,6 +223,9 @@ public class CursorAccessibilityService extends AccessibilityService implements 
             registerReceiver(
                 loadSharedConfigGestureReceiver, new IntentFilter("LOAD_SHARED_CONFIG_GESTURE"));
             registerReceiver(enableScorePreviewReceiver, new IntentFilter("ENABLE_SCORE_PREVIEW"));
+            registerReceiver(
+                applyReadingPagerUiReceiver,
+                new IntentFilter(ReadingPagerPreferences.ACTION_APPLY_UI));
             registerReceiver(
                 serviceUiManager.flyInWindowReceiver, new IntentFilter("FLY_IN_FLOAT_WINDOW"));
             registerReceiver(
@@ -434,7 +453,7 @@ public class CursorAccessibilityService extends AccessibilityService implements 
             case PAUSE:
                 // In pause mode, enable it.
                 serviceState = ServiceState.ENABLE;
-                serviceUiManager.showCursor();
+                applyReadingPagerUi();
                 break;
             default:
         }
@@ -463,6 +482,31 @@ public class CursorAccessibilityService extends AccessibilityService implements 
     }
 
     /** Enable GameFace service. */
+
+    /**
+     * Apply reading-pager overlay defaults from SharedPreferences: hide cursor and camera
+     * preview unless the user opted back into classic Gameface overlays.
+     */
+    public void applyReadingPagerUi() {
+        if (serviceUiManager == null) {
+            return;
+        }
+        if (serviceState == ServiceState.DISABLE) {
+            return;
+        }
+        if (ReadingPagerPreferences.isShowCursor(this)) {
+            serviceUiManager.showCursor();
+        } else {
+            serviceUiManager.hideCursor();
+        }
+        if (ReadingPagerPreferences.isShowCameraPreview(this)) {
+            serviceUiManager.showCameraBox();
+            serviceUiManager.maximizeCameraBox();
+        } else {
+            serviceUiManager.hideCameraBox();
+        }
+    }
+
     public void enableService() {
         Log.i(TAG, "enableService, current: "+serviceState);
 
@@ -499,6 +543,7 @@ public class CursorAccessibilityService extends AccessibilityService implements 
         serviceUiManager.showAllWindows();
         serviceUiManager.fitCameraBoxToScreen();
         serviceUiManager.setCameraBoxDraggable(true);
+        applyReadingPagerUi();
 
 
         serviceState = ServiceState.ENABLE;
@@ -551,6 +596,7 @@ public class CursorAccessibilityService extends AccessibilityService implements 
         unregisterReceiver(loadSharedConfigGestureReceiver);
         unregisterReceiver(requestServiceStateReceiver);
         unregisterReceiver(enableScorePreviewReceiver);
+        unregisterReceiver(applyReadingPagerUiReceiver);
         unregisterReceiver(serviceUiManager.flyInWindowReceiver);
         unregisterReceiver(serviceUiManager.flyOutWindowReceiver);
 
@@ -583,6 +629,14 @@ public class CursorAccessibilityService extends AccessibilityService implements 
         switch (serviceState) {
             case GLOBAL_STICK:
             case ENABLE:
+                // Global action cooldown (~800ms); pause always allowed.
+                if (event != BlendshapeEventTriggerConfig.EventType.CURSOR_PAUSE) {
+                    long nowMs = SystemClock.uptimeMillis();
+                    if (!ActionCooldown.shouldDispatch(nowMs, lastActionDispatchMs)) {
+                        return;
+                    }
+                    lastActionDispatchMs = nowMs;
+                }
                 // Check event type and dispatch it.
                 DispatchEventHelper.checkAndDispatchEvent(
                     this,
@@ -643,8 +697,12 @@ public class CursorAccessibilityService extends AccessibilityService implements 
             case ENABLE:
             case GLOBAL_STICK:
                 serviceUiManager.showAllWindows();
+                applyReadingPagerUi();
+                break;
             case PAUSE:
-                serviceUiManager.showCameraBox();
+                if (ReadingPagerPreferences.isShowCameraPreview(this)) {
+                    serviceUiManager.showCameraBox();
+                }
                 break;
             case DISABLE:
                 break;

@@ -19,6 +19,7 @@ package com.google.projectgameface;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -349,11 +350,11 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean checkAccessibilityPermission() {
         int enabled = 0;
-        final String gamefaceServiceName = this.getPackageName()
-            + "/"
-            + this.getPackageName()
-            + "."
-            + CursorAccessibilityService.class.getSimpleName();
+        // applicationId may differ from Java package (namespace); use ComponentName.
+        final ComponentName serviceComponent =
+            new ComponentName(this, CursorAccessibilityService.class);
+        final String gamefaceServiceName = serviceComponent.flattenToString();
+        final String gamefaceServiceShortName = serviceComponent.flattenToShortString();
 
         Log.i(TAG, "GameFace service name: "+gamefaceServiceName);
 
@@ -377,7 +378,8 @@ public class MainActivity extends AppCompatActivity {
                 splitter.setString(allAccessibilityServices);
                 while (splitter.hasNext()) {
                     String accessibilityService = splitter.next();
-                    if (accessibilityService.equalsIgnoreCase(gamefaceServiceName)) {
+                    if (accessibilityService.equalsIgnoreCase(gamefaceServiceName)
+                        || accessibilityService.equalsIgnoreCase(gamefaceServiceShortName)) {
                         return true;
                     }
                 }

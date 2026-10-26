@@ -43,6 +43,7 @@ public class CursorBinding extends AppCompatActivity {
     private final int[] viewIds = {
         R.id.tapLayout,
         R.id.bottomRightTapLayout,
+        R.id.swipeUpPageLayout,
         R.id.homeLayout,
         R.id.backLayout,
         R.id.notificationLayout,
@@ -57,6 +58,8 @@ public class CursorBinding extends AppCompatActivity {
     TextView tabTxtLinear ;
     TextView textBottomRightTap;
     TextView bottomRightTapTxtLinear;
+    TextView textSwipeUpPage;
+    TextView swipeUpPageTxtLinear;
     TextView textHome;
     TextView homeTxtLinear ;
     TextView textBack;
@@ -122,6 +125,12 @@ public class CursorBinding extends AppCompatActivity {
             textBottomRightTap,
             bottomRightTapTxtLinear,
             (ImageView) findViewById(R.id.bottomRightTapIcon));
+
+        setUpActionList(
+            String.valueOf(BlendshapeEventTriggerConfig.EventType.SWIPE_UP_PAGE),
+            textSwipeUpPage,
+            swipeUpPageTxtLinear,
+            (ImageView) findViewById(R.id.swipeUpPageIcon));
 
         setUpActionList(
             String.valueOf(BlendshapeEventTriggerConfig.EventType.HOME),
@@ -192,6 +201,8 @@ public class CursorBinding extends AppCompatActivity {
         tabTxtLinear = findViewById(R.id.tapTxtLinear);
         textBottomRightTap = findViewById(R.id.bottomRightTapBinding);
         bottomRightTapTxtLinear = findViewById(R.id.bottomRightTapTxtLinear);
+        textSwipeUpPage = findViewById(R.id.swipeUpPageBinding);
+        swipeUpPageTxtLinear = findViewById(R.id.swipeUpPageTxtLinear);
         textHome = findViewById(R.id.homeBinding);
         homeTxtLinear = findViewById(R.id.homeTxtLinear);
         textBack = findViewById(R.id.backBinding);
@@ -224,6 +235,9 @@ public class CursorBinding extends AppCompatActivity {
 
                         } else if (v.getId() == R.id.bottomRightTapLayout) {
                             intent.putExtra("eventType", BlendshapeEventTriggerConfig.EventType.TAP_BOTTOM_RIGHT);
+
+                        } else if (v.getId() == R.id.swipeUpPageLayout) {
+                            intent.putExtra("eventType", BlendshapeEventTriggerConfig.EventType.SWIPE_UP_PAGE);
 
                         } else if (v.getId() == R.id.homeLayout) {
                             intent.putExtra("eventType", BlendshapeEventTriggerConfig.EventType.HOME);

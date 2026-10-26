@@ -76,6 +76,27 @@ public class DispatchEventHelper {
         break;
       }
 
+
+      case SWIPE_UP_PAGE: {
+        float[] path =
+            PageGestureGeometry.swipeUpPage(
+                parentService.screenSize.x, parentService.screenSize.y);
+        float startX = path[0];
+        float startY = path[1];
+        float endX = path[2];
+        float endY = path[3];
+        parentService.dispatchGesture(
+            CursorUtils.createSwipe(
+                startX,
+                startY,
+                /* xOffset= */ endX - startX,
+                /* yOffset= */ endY - startY,
+                /* duration= */ PageGestureGeometry.SWIPE_UP_DURATION_MS),
+            /* callback= */ null,
+            /* handler= */ null);
+        break;
+      }
+
       case CURSOR_PAUSE:
         parentService.togglePause();
         break;

@@ -41,9 +41,9 @@ public class CursorBinding extends AppCompatActivity {
 
 
     private final int[] viewIds = {
-        R.id.tapLayout,
         R.id.bottomRightTapLayout,
         R.id.swipeUpPageLayout,
+        R.id.tapLayout,
         R.id.homeLayout,
         R.id.backLayout,
         R.id.notificationLayout,

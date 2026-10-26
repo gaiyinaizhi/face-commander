@@ -160,6 +160,8 @@ public class MainActivity extends AppCompatActivity {
             Log.i(TAG, "First launch, assign default binding");
             BlendshapeEventTriggerConfig.writeBindingConfig(this, BlendshapeEventTriggerConfig.Blendshape.OPEN_MOUTH,
                     BlendshapeEventTriggerConfig.EventType.TAP_BOTTOM_RIGHT, 20);
+            BlendshapeEventTriggerConfig.writeBindingConfig(this, BlendshapeEventTriggerConfig.Blendshape.RAISE_RIGHT_EYEBROW,
+                    BlendshapeEventTriggerConfig.EventType.SWIPE_UP_PAGE, 20);
             BlendshapeEventTriggerConfig.writeBindingConfig(this, BlendshapeEventTriggerConfig.Blendshape.MOUTH_LEFT,
                     BlendshapeEventTriggerConfig.EventType.DRAG_TOGGLE, 20);
             BlendshapeEventTriggerConfig.writeBindingConfig(this, BlendshapeEventTriggerConfig.Blendshape.MOUTH_RIGHT,

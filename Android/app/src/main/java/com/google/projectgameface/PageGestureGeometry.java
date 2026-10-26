@@ -28,6 +28,29 @@ public final class PageGestureGeometry {
 
   public static final long TAP_DURATION_MS = 250L;
 
+
+  /** Start Y ratio for page swipe-up (from lower mid-screen). */
+  public static final float SWIPE_UP_START_Y_RATIO = 0.70f;
+  /** End Y ratio for page swipe-up (toward upper mid-screen). */
+  public static final float SWIPE_UP_END_Y_RATIO = 0.30f;
+  /** X ratio shared by start/end (screen center). */
+  public static final float SWIPE_UP_X_RATIO = 0.50f;
+  /** Duration for page swipe-up (input.md: ~200–300ms). */
+  public static final int SWIPE_UP_DURATION_MS = 250;
+
+  /**
+   * @return float[4] as {startX, startY, endX, endY} in pixels
+   */
+  public static float[] swipeUpPage(int screenWidthPx, int screenHeightPx) {
+    if (screenWidthPx <= 0 || screenHeightPx <= 0) {
+      throw new IllegalArgumentException("screen size must be positive");
+    }
+    float x = screenWidthPx * SWIPE_UP_X_RATIO;
+    float startY = screenHeightPx * SWIPE_UP_START_Y_RATIO;
+    float endY = screenHeightPx * SWIPE_UP_END_Y_RATIO;
+    return new float[] {x, startY, x, endY};
+  }
+
   private PageGestureGeometry() {}
 
   /**

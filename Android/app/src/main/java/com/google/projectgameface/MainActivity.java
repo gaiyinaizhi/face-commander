@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
             // Assign some default binding so user can navigate around.
             Log.i(TAG, "First launch, assign default binding");
             BlendshapeEventTriggerConfig.writeBindingConfig(this, BlendshapeEventTriggerConfig.Blendshape.OPEN_MOUTH,
-                    BlendshapeEventTriggerConfig.EventType.CURSOR_TOUCH, 20);
+                    BlendshapeEventTriggerConfig.EventType.TAP_BOTTOM_RIGHT, 20);
             BlendshapeEventTriggerConfig.writeBindingConfig(this, BlendshapeEventTriggerConfig.Blendshape.MOUTH_LEFT,
                     BlendshapeEventTriggerConfig.EventType.DRAG_TOGGLE, 20);
             BlendshapeEventTriggerConfig.writeBindingConfig(this, BlendshapeEventTriggerConfig.Blendshape.MOUTH_RIGHT,

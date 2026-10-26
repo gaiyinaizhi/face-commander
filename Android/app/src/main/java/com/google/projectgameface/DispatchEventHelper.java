@@ -59,6 +59,23 @@ public class DispatchEventHelper {
         serviceUiManager.drawTouchDot(cursorController.getCursorPositionXY());
         break;
 
+      case TAP_BOTTOM_RIGHT: {
+        float[] tapPoint =
+            PageGestureGeometry.tapBottomRight(
+                parentService.screenSize.x, parentService.screenSize.y);
+        parentService.dispatchGesture(
+            CursorUtils.createClick(
+                tapPoint[0],
+                tapPoint[1],
+                /* startTime= */ 0,
+                /* duration= */ PageGestureGeometry.TAP_DURATION_MS),
+            /* callback= */ null,
+            /* handler= */ null);
+        serviceUiManager.drawTouchDot(
+            new int[] {Math.round(tapPoint[0]), Math.round(tapPoint[1])});
+        break;
+      }
+
       case CURSOR_PAUSE:
         parentService.togglePause();
         break;

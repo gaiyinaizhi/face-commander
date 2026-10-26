@@ -42,6 +42,7 @@ public class CursorBinding extends AppCompatActivity {
 
     private final int[] viewIds = {
         R.id.tapLayout,
+        R.id.bottomRightTapLayout,
         R.id.homeLayout,
         R.id.backLayout,
         R.id.notificationLayout,
@@ -54,6 +55,8 @@ public class CursorBinding extends AppCompatActivity {
 
     TextView textTab;
     TextView tabTxtLinear ;
+    TextView textBottomRightTap;
+    TextView bottomRightTapTxtLinear;
     TextView textHome;
     TextView homeTxtLinear ;
     TextView textBack;
@@ -114,6 +117,11 @@ public class CursorBinding extends AppCompatActivity {
             tabTxtLinear,
             (ImageView) findViewById(R.id.tapIcon));
 
+        setUpActionList(
+            String.valueOf(BlendshapeEventTriggerConfig.EventType.TAP_BOTTOM_RIGHT),
+            textBottomRightTap,
+            bottomRightTapTxtLinear,
+            (ImageView) findViewById(R.id.bottomRightTapIcon));
 
         setUpActionList(
             String.valueOf(BlendshapeEventTriggerConfig.EventType.HOME),
@@ -182,6 +190,8 @@ public class CursorBinding extends AppCompatActivity {
 
         textTab = findViewById(R.id.tapBinding);
         tabTxtLinear = findViewById(R.id.tapTxtLinear);
+        textBottomRightTap = findViewById(R.id.bottomRightTapBinding);
+        bottomRightTapTxtLinear = findViewById(R.id.bottomRightTapTxtLinear);
         textHome = findViewById(R.id.homeBinding);
         homeTxtLinear = findViewById(R.id.homeTxtLinear);
         textBack = findViewById(R.id.backBinding);
@@ -211,6 +221,9 @@ public class CursorBinding extends AppCompatActivity {
 
                         if (v.getId() == R.id.tapLayout) {
                             intent.putExtra("eventType", BlendshapeEventTriggerConfig.EventType.CURSOR_TOUCH);
+
+                        } else if (v.getId() == R.id.bottomRightTapLayout) {
+                            intent.putExtra("eventType", BlendshapeEventTriggerConfig.EventType.TAP_BOTTOM_RIGHT);
 
                         } else if (v.getId() == R.id.homeLayout) {
                             intent.putExtra("eventType", BlendshapeEventTriggerConfig.EventType.HOME);

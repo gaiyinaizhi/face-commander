@@ -34,4 +34,19 @@ public class PageGestureGeometryTest {
     assertThrows(IllegalArgumentException.class, () -> PageGestureGeometry.tapBottomRight(0, 100));
     assertThrows(IllegalArgumentException.class, () -> PageGestureGeometry.tapBottomRight(100, -1));
   }
+
+  @Test
+  public void swipeUpPage_usesConfiguredRatiosAndDurationConstant() {
+    float[] path = PageGestureGeometry.swipeUpPage(1080, 2400);
+    assertEquals(1080 * 0.50f, path[0], 0.01f);
+    assertEquals(2400 * 0.70f, path[1], 0.01f);
+    assertEquals(1080 * 0.50f, path[2], 0.01f);
+    assertEquals(2400 * 0.30f, path[3], 0.01f);
+    assertEquals(250, PageGestureGeometry.SWIPE_UP_DURATION_MS);
+  }
+
+  @Test
+  public void swipeUpPage_rejectsNonPositiveSize() {
+    assertThrows(IllegalArgumentException.class, () -> PageGestureGeometry.swipeUpPage(0, 100));
+  }
 }

@@ -122,6 +122,69 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/readingPagerRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toggleRow">
+
+            <TextView
+                android:id="@+id/showCursorLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Show cursor"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/showCursorSwitch"
+                app:layout_constraintEnd_toStartOf="@+id/showCursorSwitch"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/showCursorSwitch" />
+
+            <Switch
+                android:id="@+id/showCursorSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:theme="@style/MySwitch"
+                android:thumb="@drawable/custom_thumb"
+                android:track="@drawable/custom_track"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            <TextView
+                android:id="@+id/showCameraPreviewLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Show camera preview"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/showCameraPreviewSwitch"
+                app:layout_constraintEnd_toStartOf="@+id/showCameraPreviewSwitch"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/showCameraPreviewSwitch" />
+
+            <Switch
+                android:id="@+id/showCameraPreviewSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:minHeight="48dp"
+                android:theme="@style/MySwitch"
+                android:thumb="@drawable/custom_thumb"
+                android:track="@drawable/custom_track"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/showCursorSwitch"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bindingRow"
             android:layout_width="match_parent"
@@ -131,7 +194,7 @@
             android:layout_marginEnd="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toggleRow">
+            app:layout_constraintTop_toBottomOf="@+id/readingPagerRow">
 
             <TextView
                 android:id="@id/mouseTxt"

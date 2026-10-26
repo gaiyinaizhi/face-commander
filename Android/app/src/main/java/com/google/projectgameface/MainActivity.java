@@ -155,11 +155,27 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        Switch showCursorSwitch = findViewById(R.id.showCursorSwitch);
+        showCursorSwitch.setChecked(ReadingPagerPreferences.isShowCursor(this));
+        showCursorSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            ReadingPagerPreferences.setShowCursor(this, isChecked);
+            sendBroadcast(new Intent(ReadingPagerPreferences.ACTION_APPLY_UI));
+        });
+
+        Switch showCameraPreviewSwitch = findViewById(R.id.showCameraPreviewSwitch);
+        showCameraPreviewSwitch.setChecked(ReadingPagerPreferences.isShowCameraPreview(this));
+        showCameraPreviewSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            ReadingPagerPreferences.setShowCameraPreview(this, isChecked);
+            sendBroadcast(new Intent(ReadingPagerPreferences.ACTION_APPLY_UI));
+        });
+
         if(isFirstLaunch()){
             // Assign some default binding so user can navigate around.
             Log.i(TAG, "First launch, assign default binding");
             BlendshapeEventTriggerConfig.writeBindingConfig(this, BlendshapeEventTriggerConfig.Blendshape.OPEN_MOUTH,
                     BlendshapeEventTriggerConfig.EventType.TAP_BOTTOM_RIGHT, 20);
+            BlendshapeEventTriggerConfig.writeBindingConfig(this, BlendshapeEventTriggerConfig.Blendshape.RAISE_RIGHT_EYEBROW,
+                    BlendshapeEventTriggerConfig.EventType.SWIPE_UP_PAGE, 20);
             BlendshapeEventTriggerConfig.writeBindingConfig(this, BlendshapeEventTriggerConfig.Blendshape.MOUTH_LEFT,
                     BlendshapeEventTriggerConfig.EventType.DRAG_TOGGLE, 20);
             BlendshapeEventTriggerConfig.writeBindingConfig(this, BlendshapeEventTriggerConfig.Blendshape.MOUTH_RIGHT,

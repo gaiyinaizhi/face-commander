@@ -21,6 +21,7 @@
 
     <string-array name="event_type_description_keys">
         <item>CURSOR_TOUCH</item>
+        <item>TAP_BOTTOM_RIGHT</item>
         <item>HOME</item>
         <item>BACK</item>
         <item>SHOW_NOTIFICATION</item>
@@ -34,6 +35,7 @@
 
     <string-array name="event_type_description_keys_values">
         <item>Choose a facial gesture that will select items on your phone, like apps, text, buttons, and more</item>
+        <item>Choose a facial gesture that will tap the bottom-right of the screen (for page turn in reading apps)</item>
         <item>Choose a facial gesture that will open your phone’s home screen</item>
         <item>Choose a facial gesture that will go back to the last screen</item>
         <item>Choose a facial gesture that will open your notifications</item>

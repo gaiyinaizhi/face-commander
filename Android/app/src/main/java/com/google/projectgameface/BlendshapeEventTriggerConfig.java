@@ -43,6 +43,7 @@ public class BlendshapeEventTriggerConfig {
   public enum EventType {
     NONE,
     CURSOR_TOUCH,
+    TAP_BOTTOM_RIGHT,
     CURSOR_PAUSE,
     CURSOR_RESET,
     SWIPE_LEFT,
@@ -60,6 +61,7 @@ public class BlendshapeEventTriggerConfig {
   public static final HashMap<EventType, String> BEATIFY_EVENT_TYPE_NAME = new HashMap<EventType, String>() {{
     put(EventType.NONE, "None");
     put(EventType.CURSOR_TOUCH, "Select");
+    put(EventType.TAP_BOTTOM_RIGHT, "Tap bottom right");
     put(EventType.CURSOR_PAUSE, "Pause / Unpause");
     put(EventType.CURSOR_RESET, "Reset");
     put(EventType.SWIPE_LEFT, "Swipe left");

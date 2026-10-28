@@ -311,6 +311,226 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/browsInnerUp"
+                    android:layout_width="144dp"
+                    android:layout_height="134dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/gesture_button"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toStartOf="@+id/mouthPucker"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lowerRightEyebrow">
+
+                    <ImageView
+                        android:layout_width="76dp"
+                        android:layout_height="76dp"
+                        android:src="@drawable/brows_inner_up" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="text_view_gesture_name"
+                        android:text="@string/blendshape_brows_inner_up"
+                        android:textColor="#0B57D0"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/mouthPucker"
+                    android:layout_width="144dp"
+                    android:layout_height="134dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/gesture_button"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/browsInnerUp"
+                    app:layout_constraintTop_toBottomOf="@+id/lowerRightEyebrow">
+
+                    <ImageView
+                        android:layout_width="76dp"
+                        android:layout_height="76dp"
+                        android:src="@drawable/mouth_pucker" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="text_view_gesture_name"
+                        android:text="@string/blendshape_mouth_pucker"
+                        android:textColor="#0B57D0"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/smile"
+                    android:layout_width="144dp"
+                    android:layout_height="134dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/gesture_button"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toStartOf="@+id/cheekPuff"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/browsInnerUp">
+
+                    <ImageView
+                        android:layout_width="76dp"
+                        android:layout_height="76dp"
+                        android:src="@drawable/smile" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="text_view_gesture_name"
+                        android:text="@string/blendshape_smile"
+                        android:textColor="#0B57D0"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/cheekPuff"
+                    android:layout_width="144dp"
+                    android:layout_height="134dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/gesture_button"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/smile"
+                    app:layout_constraintTop_toBottomOf="@+id/browsInnerUp">
+
+                    <ImageView
+                        android:layout_width="76dp"
+                        android:layout_height="76dp"
+                        android:src="@drawable/cheek_puff" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="text_view_gesture_name"
+                        android:text="@string/blendshape_cheek_puff"
+                        android:textColor="#0B57D0"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/eyeBlinkLeft"
+                    android:layout_width="144dp"
+                    android:layout_height="134dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/gesture_button"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toStartOf="@+id/eyeBlinkRight"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/smile">
+
+                    <ImageView
+                        android:layout_width="76dp"
+                        android:layout_height="76dp"
+                        android:src="@drawable/eye_blink_left" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="text_view_gesture_name"
+                        android:text="@string/blendshape_eye_blink_left"
+                        android:textColor="#0B57D0"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/eyeBlinkRight"
+                    android:layout_width="144dp"
+                    android:layout_height="134dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/gesture_button"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/eyeBlinkLeft"
+                    app:layout_constraintTop_toBottomOf="@+id/smile">
+
+                    <ImageView
+                        android:layout_width="76dp"
+                        android:layout_height="76dp"
+                        android:src="@drawable/eye_blink_right" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="text_view_gesture_name"
+                        android:text="@string/blendshape_eye_blink_right"
+                        android:textColor="#0B57D0"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/eyesWide"
+                    android:layout_width="144dp"
+                    android:layout_height="134dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/gesture_button"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toStartOf="@+id/doubleBlink"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/eyeBlinkLeft">
+
+                    <ImageView
+                        android:layout_width="76dp"
+                        android:layout_height="76dp"
+                        android:src="@drawable/eyes_wide" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="text_view_gesture_name"
+                        android:text="@string/blendshape_eyes_wide"
+                        android:textColor="#0B57D0"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/doubleBlink"
+                    android:layout_width="144dp"
+                    android:layout_height="134dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/gesture_button"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/eyesWide"
+                    app:layout_constraintTop_toBottomOf="@+id/eyeBlinkLeft">
+
+                    <ImageView
+                        android:layout_width="76dp"
+                        android:layout_height="76dp"
+                        android:src="@drawable/double_blink" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="text_view_gesture_name"
+                        android:text="@string/blendshape_double_blink"
+                        android:textColor="#0B57D0"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/none"
                     android:layout_width="144dp"
                     android:layout_height="134dp"
@@ -321,7 +541,7 @@
                     android:orientation="vertical"
                     app:layout_constraintEnd_toStartOf="@+id/temp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/lowerRightEyebrow">
+                    app:layout_constraintTop_toBottomOf="@+id/eyesWide">
 
                     <ImageView
                         android:layout_width="76dp"
@@ -349,7 +569,7 @@
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/none"
-                    app:layout_constraintTop_toBottomOf="@+id/lowerRightEyebrow" />
+                    app:layout_constraintTop_toBottomOf="@+id/eyesWide" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

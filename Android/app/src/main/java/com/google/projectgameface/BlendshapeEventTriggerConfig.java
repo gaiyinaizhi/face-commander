@@ -89,8 +89,14 @@ public class BlendshapeEventTriggerConfig {
     put(Blendshape.RAISE_LEFT_EYEBROW, "Raise left eyebrow");
     put(Blendshape.LOWER_RIGHT_EYEBROW, "Lower right eyebrow");
     put(Blendshape.LOWER_LEFT_EYEBROW, "Lower left eyebrow");
-
-
+    put(Blendshape.BROWS_INNER_UP, "Raise inner brows");
+    put(Blendshape.MOUTH_PUCKER, "Pucker");
+    put(Blendshape.SMILE, "Smile");
+    put(Blendshape.CHEEK_PUFF, "Cheek puff");
+    put(Blendshape.EYE_BLINK_LEFT, "Blink left eye");
+    put(Blendshape.EYE_BLINK_RIGHT, "Blink right eye");
+    put(Blendshape.EYES_WIDE, "Eyes wide");
+    put(Blendshape.DOUBLE_BLINK, "Double blink");
   }};
 
 
@@ -120,6 +126,22 @@ public class BlendshapeEventTriggerConfig {
         return context.getString(R.string.blendshape_lower_right_eyebrow);
       case LOWER_LEFT_EYEBROW:
         return context.getString(R.string.blendshape_lower_left_eyebrow);
+      case BROWS_INNER_UP:
+        return context.getString(R.string.blendshape_brows_inner_up);
+      case MOUTH_PUCKER:
+        return context.getString(R.string.blendshape_mouth_pucker);
+      case SMILE:
+        return context.getString(R.string.blendshape_smile);
+      case CHEEK_PUFF:
+        return context.getString(R.string.blendshape_cheek_puff);
+      case EYE_BLINK_LEFT:
+        return context.getString(R.string.blendshape_eye_blink_left);
+      case EYE_BLINK_RIGHT:
+        return context.getString(R.string.blendshape_eye_blink_right);
+      case EYES_WIDE:
+        return context.getString(R.string.blendshape_eyes_wide);
+      case DOUBLE_BLINK:
+        return context.getString(R.string.blendshape_double_blink);
       case NONE:
       default:
         return context.getString(R.string.blendshape_none);
@@ -166,7 +188,10 @@ public class BlendshapeEventTriggerConfig {
     }
   }
 
-  /** Allowed blendshape that our app can use and its array index (from MediaPipe's). */
+  /**
+   * Allowed blendshape that our app can use and its array index (from MediaPipe's).
+   * Negative values mark composites / virtual gestures resolved via {@link #scoreFor}.
+   */
   public enum Blendshape {
     NONE(-1),
     OPEN_MOUTH(25),
@@ -176,22 +201,147 @@ public class BlendshapeEventTriggerConfig {
     RAISE_LEFT_EYEBROW(5),
     LOWER_LEFT_EYEBROW(2),
     RAISE_RIGHT_EYEBROW(4),
-    LOWER_RIGHT_EYEBROW(1);
+    LOWER_RIGHT_EYEBROW(1),
+    BROWS_INNER_UP(3),
+    MOUTH_PUCKER(38),
+    /** Composite: max(mouthSmileLeft=44, mouthSmileRight=45). */
+    SMILE(-10),
+    CHEEK_PUFF(6),
+    EYE_BLINK_LEFT(9),
+    EYE_BLINK_RIGHT(10),
+    /** Composite: max(eyeWideLeft=21, eyeWideRight=22). */
+    EYES_WIDE(-11),
+    /**
+     * Composite double both-eyes blink (ticket 06). Score for preview is
+     * max(eyeBlinkLeft, eyeBlinkRight); event firing uses {@link DoubleBlinkGesture}.
+     */
+    DOUBLE_BLINK(-12);
     public final int value;
 
     Blendshape(int index) {
       this.value = index;
     }
+
+    /** True when score is not a single MediaPipe index. */
+    public boolean isComposite() {
+      return value < -1;
+    }
   }
 
-  /** For converting blendshapeIndexInUI to Blendshape enum. */
+  /** Pre-expansion UI index of NONE (tickets 05/06 append gestures before NONE). */
+  public static final int LEGACY_NONE_UI_INDEX = 8;
+
+  /** One-shot migration flag written into GameFaceLocalConfig. */
+  public static final String PREFS_KEY_BLENDSHAPE_UI_ORDER_V2 = "blendshape_ui_order_v2";
+
+  /**
+   * For converting blendshapeIndexInUI to Blendshape enum.
+   * Indices 0–7 stay the original gestures; new gestures are inserted before NONE.
+   */
   protected static final List<Blendshape> BLENDSHAPE_FROM_ORDER_IN_UI = Stream.of(
       Blendshape.OPEN_MOUTH, Blendshape.MOUTH_LEFT,
       Blendshape.MOUTH_RIGHT, Blendshape.ROLL_LOWER_MOUTH,
       Blendshape.RAISE_RIGHT_EYEBROW, Blendshape.RAISE_LEFT_EYEBROW,
       Blendshape.LOWER_RIGHT_EYEBROW, Blendshape.LOWER_LEFT_EYEBROW,
+      Blendshape.BROWS_INNER_UP, Blendshape.MOUTH_PUCKER,
+      Blendshape.SMILE, Blendshape.CHEEK_PUFF,
+      Blendshape.EYE_BLINK_LEFT, Blendshape.EYE_BLINK_RIGHT,
+      Blendshape.EYES_WIDE, Blendshape.DOUBLE_BLINK,
       Blendshape.NONE
   ).collect(Collectors.toList());
+
+  /** MediaPipe indices for composite smile. */
+  public static final int MOUTH_SMILE_LEFT_INDEX = 44;
+  public static final int MOUTH_SMILE_RIGHT_INDEX = 45;
+  /** MediaPipe indices for composite eyes-wide. */
+  public static final int EYE_WIDE_LEFT_INDEX = 21;
+  public static final int EYE_WIDE_RIGHT_INDEX = 22;
+  /** MediaPipe indices for blink (also used by DOUBLE_BLINK preview / detector). */
+  public static final int EYE_BLINK_LEFT_INDEX = 9;
+  public static final int EYE_BLINK_RIGHT_INDEX = 10;
+
+  private static float safeGet(float[] blendshapes, int index) {
+    if (blendshapes == null || index < 0 || index >= blendshapes.length) {
+      return 0.f;
+    }
+    return blendshapes[index];
+  }
+
+  /**
+   * Unified score source for atomic and composite blendshapes (createCursorEvent + sensitivity
+   * preview).
+   */
+  public static float scoreFor(Blendshape shape, float[] blendshapes) {
+    if (shape == null || shape == Blendshape.NONE || blendshapes == null) {
+      return 0.f;
+    }
+    switch (shape) {
+      case SMILE:
+        return Math.max(
+            safeGet(blendshapes, MOUTH_SMILE_LEFT_INDEX),
+            safeGet(blendshapes, MOUTH_SMILE_RIGHT_INDEX));
+      case EYES_WIDE:
+        return Math.max(
+            safeGet(blendshapes, EYE_WIDE_LEFT_INDEX),
+            safeGet(blendshapes, EYE_WIDE_RIGHT_INDEX));
+      case DOUBLE_BLINK:
+        // Preview / detector score: max of both eyelids (robust to slight asymmetry).
+        return Math.max(
+            safeGet(blendshapes, EYE_BLINK_LEFT_INDEX),
+            safeGet(blendshapes, EYE_BLINK_RIGHT_INDEX));
+      default:
+        return safeGet(blendshapes, shape.value);
+    }
+  }
+
+  /** Current UI index of NONE after the tickets 05/06 expansion. */
+  public static int noneUiIndex() {
+    return BLENDSHAPE_FROM_ORDER_IN_UI.indexOf(Blendshape.NONE);
+  }
+
+  /**
+   * One-time prefs migration: old NONE was UI index 8; after expansion NONE moves later.
+   * Real gesture bindings 0–7 are left untouched. Sets {@link #PREFS_KEY_BLENDSHAPE_UI_ORDER_V2}.
+   */
+  public static void migrateBlendshapeUiIndicesIfNeeded(SharedPreferences preferences) {
+    if (preferences == null) {
+      return;
+    }
+    if (preferences.getBoolean(PREFS_KEY_BLENDSHAPE_UI_ORDER_V2, false)) {
+      return;
+    }
+    SharedPreferences.Editor editor = preferences.edit();
+    int newNone = noneUiIndex();
+    for (EventType eventType : EventType.values()) {
+      String key = eventType.name();
+      if (!preferences.contains(key)) {
+        continue;
+      }
+      int index = preferences.getInt(key, -1);
+      if (index == LEGACY_NONE_UI_INDEX) {
+        editor.putInt(key, newNone);
+      }
+    }
+    editor.putBoolean(PREFS_KEY_BLENDSHAPE_UI_ORDER_V2, true);
+    editor.apply();
+  }
+
+  /**
+   * Read a stored UI blendshape index after running migration. Defaults to NONE when missing.
+   */
+  public static int getBlendshapeIndexInUi(SharedPreferences preferences, String eventTypeKey) {
+    migrateBlendshapeUiIndicesIfNeeded(preferences);
+    return preferences.getInt(eventTypeKey, noneUiIndex());
+  }
+
+  /** Resolve stored UI index to {@link Blendshape}, after migration. */
+  public static Blendshape blendshapeFromPrefs(SharedPreferences preferences, String eventTypeKey) {
+    int index = getBlendshapeIndexInUi(preferences, eventTypeKey);
+    if (index < 0 || index >= BLENDSHAPE_FROM_ORDER_IN_UI.size()) {
+      return Blendshape.NONE;
+    }
+    return BLENDSHAPE_FROM_ORDER_IN_UI.get(index);
+  }
 
 
 
@@ -227,7 +377,7 @@ public class BlendshapeEventTriggerConfig {
     @Nullable
     public static BlendshapeAndThreshold createFromIndexInUi(
         int blendshapeIndexInUi, float threshold) {
-      if ((blendshapeIndexInUi > BLENDSHAPE_FROM_ORDER_IN_UI.size()) || (blendshapeIndexInUi < 0)) {
+      if ((blendshapeIndexInUi >= BLENDSHAPE_FROM_ORDER_IN_UI.size()) || (blendshapeIndexInUi < 0)) {
         Log.w(
             TAG,
             "Cannot create BlendshapeAndThreshold from blendshapeIndexInUi: "
@@ -292,13 +442,15 @@ public class BlendshapeEventTriggerConfig {
       return;
     }
 
-    int blendshapeIndexInUi = sharedPreferences.getInt(eventTypeString, -1);
-    if (blendshapeIndexInUi == -1) {
+    migrateBlendshapeUiIndicesIfNeeded(sharedPreferences);
+
+    if (!sharedPreferences.contains(eventTypeString)) {
       Log.i(
           TAG,
           "Key " + eventTypeString + " not found in SharedPreference, keep using default value.");
       return;
     }
+    int blendshapeIndexInUi = sharedPreferences.getInt(eventTypeString, noneUiIndex());
 
     int thresholdInUi =
         sharedPreferences.getInt(eventTypeString + "_size", PREFERENCE_INT_NOT_FOUND);

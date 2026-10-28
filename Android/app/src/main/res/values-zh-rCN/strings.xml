@@ -83,6 +83,14 @@
     <string name="blendshape_raise_left_eyebrow">挑左眉</string>
     <string name="blendshape_lower_right_eyebrow">压右眉</string>
     <string name="blendshape_lower_left_eyebrow">压左眉</string>
+    <string name="blendshape_brows_inner_up">双眉上扬</string>
+    <string name="blendshape_mouth_pucker">嘟嘴</string>
+    <string name="blendshape_smile">微笑</string>
+    <string name="blendshape_cheek_puff">鼓腮</string>
+    <string name="blendshape_eye_blink_left">眨左眼</string>
+    <string name="blendshape_eye_blink_right">眨右眼</string>
+    <string name="blendshape_eyes_wide">睁大眼</string>
+    <string name="blendshape_double_blink">连续双眼眨眼×2</string>
     <string name="blendshape_none_short">无</string>
 
     <string name="title_adjust_gesture_sensitivity">调节手势灵敏度</string>

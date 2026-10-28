@@ -38,11 +38,11 @@ public class GrantPermissionActivity extends AppCompatActivity {
         TextView description = findViewById(R.id.description);
         ImageView imagePermission = findViewById(R.id.imagePermission);
         if(Objects.equals(permission, "grantAccessibility")){
-            description.setText("Change permissions in your device’s \napp settings. Give GameFace access to \nAccessibility.");
+            description.setText(getString(R.string.grant_accessibility_description));
             imagePermission.setImageResource(R.drawable.grant_accessibility);
         }
         else if(Objects.equals(permission, "grantCamera")){
-            description.setText("Change permissions in your device’s \napp settings. Give GameFace access to \nCamera.");
+            description.setText(getString(R.string.grant_camera_description));
             imagePermission.setImageResource(R.drawable.grant_camera);
         }
         findViewById(R.id.setting).setOnClickListener(v -> {

@@ -41,8 +41,8 @@ public class ChooseGestureActivity extends AppCompatActivity {
     private static final String TAG = "ChooseGestureActivity";
     private LinearLayout unFocus;
 
-    private static final String CURRENT_TEXT = "\n(Current)";
-    private static final String IN_USE_TEXT = "\n(In use)";
+    private String currentTextSuffix;
+    private String inUseTextSuffix;
 
     ConstraintLayout chooseGestureLayout;
 
@@ -75,9 +75,9 @@ public class ChooseGestureActivity extends AppCompatActivity {
 
 
         String newTextLabel = (String) gestureText.getText();
-        newTextLabel= newTextLabel.replace(IN_USE_TEXT, "");
-        newTextLabel = newTextLabel.replace(CURRENT_TEXT, "");
-        newTextLabel +=  IN_USE_TEXT;
+        newTextLabel= newTextLabel.replace(inUseTextSuffix, "");
+        newTextLabel = newTextLabel.replace(currentTextSuffix, "");
+        newTextLabel +=  inUseTextSuffix;
 
 
         gestureText.setText(newTextLabel);
@@ -101,9 +101,9 @@ public class ChooseGestureActivity extends AppCompatActivity {
         {return;}
 
         String newTextLabel = (String) gestureText.getText();
-        newTextLabel = newTextLabel.replace(IN_USE_TEXT, "");
-        newTextLabel = newTextLabel.replace(CURRENT_TEXT, "");
-        newTextLabel +=  CURRENT_TEXT;
+        newTextLabel = newTextLabel.replace(inUseTextSuffix, "");
+        newTextLabel = newTextLabel.replace(currentTextSuffix, "");
+        newTextLabel +=  currentTextSuffix;
         gestureText.setText(newTextLabel);
         gestureText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
     }
@@ -122,8 +122,8 @@ public class ChooseGestureActivity extends AppCompatActivity {
         {return;}
 
         String newTextLabel = (String) gestureText.getText();
-        newTextLabel = newTextLabel.replace(IN_USE_TEXT, "");
-        newTextLabel = newTextLabel.replace(CURRENT_TEXT, "");
+        newTextLabel = newTextLabel.replace(inUseTextSuffix, "");
+        newTextLabel = newTextLabel.replace(currentTextSuffix, "");
 
 
         gestureText.setText(newTextLabel);
@@ -213,6 +213,8 @@ public class ChooseGestureActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_choose_gesture);
         getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
+        currentTextSuffix = getString(R.string.gesture_current_suffix);
+        inUseTextSuffix = getString(R.string.gesture_in_use_suffix);
 
         SharedPreferences preferences = getSharedPreferences("GameFaceLocalConfig", Context.MODE_PRIVATE);
 
@@ -231,7 +233,7 @@ public class ChooseGestureActivity extends AppCompatActivity {
 
 
         // Setting actionbar
-        String actionBarText = BlendshapeEventTriggerConfig.BEATIFY_EVENT_TYPE_NAME.get(pageEventType);
+        String actionBarText = BlendshapeEventTriggerConfig.getBeautifyEventTypeName(this, pageEventType);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(actionBarText);
 
@@ -257,7 +259,7 @@ public class ChooseGestureActivity extends AppCompatActivity {
                     pageEventType,
                     0);
                 try {
-                    CharSequence text = "Setting Completed!";
+                    CharSequence text = getString(R.string.setting_completed);
                     int duration = Toast.LENGTH_LONG;
                     Toast toast = Toast.makeText(getBaseContext(), text, duration);
                     toast.show();
@@ -303,10 +305,10 @@ public class ChooseGestureActivity extends AppCompatActivity {
                 selectedBlendshape = BlendshapeEventTriggerConfig.BLENDSHAPE_FROM_ORDER_IN_UI.get(position);
                 if(selectedBlendshape == BlendshapeEventTriggerConfig.Blendshape.NONE){
                     Button nextBtn = findViewById(R.id.nextBtn);
-                    nextBtn.setText("Done");
+                    nextBtn.setText(getString(R.string.btn_done));
                 } else {
                     Button nextBtn = findViewById(R.id.nextBtn);
-                    nextBtn.setText("Next");
+                    nextBtn.setText(getString(R.string.btn_next));
                 }
                 unFocus = (LinearLayout) childView;
 

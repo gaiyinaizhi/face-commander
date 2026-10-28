@@ -53,7 +53,7 @@ public class CursorBindingTest {
 
         CursorBinding cursorBindingResume = Robolectric.buildActivity(CursorBinding.class).create().start().resume().get();
         String text = cursorBindingResume.getDescriptionTextViewValue();
-        String actual = "Add";
+        String actual = cursorBindingResume.getString(R.string.btn_add);
 
         assertEquals(actual, text);
     }
@@ -66,7 +66,7 @@ public class CursorBindingTest {
 
         CursorBinding cursorBindingResume = Robolectric.buildActivity(CursorBinding.class).create().start().resume().get();
         String text = cursorBindingResume.getDescriptionTextViewValue();
-        String actual = "Edit";
+        String actual = cursorBindingResume.getString(R.string.btn_edit);
 
         assertEquals(actual, text);
     }

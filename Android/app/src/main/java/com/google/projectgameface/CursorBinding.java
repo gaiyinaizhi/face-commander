@@ -94,9 +94,9 @@ public class CursorBinding extends AppCompatActivity {
                 BlendshapeEventTriggerConfig.BLENDSHAPE_FROM_ORDER_IN_UI.indexOf(
                 BlendshapeEventTriggerConfig.Blendshape.NONE)));
 
-        String addTxt = "Add";
-        String editTxt = "Edit";
-        String beautifyBlendshapeName = BlendshapeEventTriggerConfig.BEAUTIFY_BLENDSHAPE_NAME.get(savedBlendshape);
+        String addTxt = getString(R.string.btn_add);
+        String editTxt = getString(R.string.btn_edit);
+        String beautifyBlendshapeName = BlendshapeEventTriggerConfig.getBeautifyBlendshapeName(this, savedBlendshape);
         textViewAction.setText(beautifyBlendshapeName);
 
 
@@ -195,7 +195,7 @@ public class CursorBinding extends AppCompatActivity {
         getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
         // setting actionbar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Set up gestures");
+        getSupportActionBar().setTitle(getString(R.string.title_setup_gestures));
 
         textTab = findViewById(R.id.tapBinding);
         tabTxtLinear = findViewById(R.id.tapTxtLinear);

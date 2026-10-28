@@ -23,7 +23,7 @@ import com.google.projectgameface.BlendshapeEventTriggerConfig.Blendshape;
 import java.util.List;
 import org.junit.Test;
 
-/** Composite score + UI order invariants (ticket 05). */
+/** Composite / differential score + UI order invariants. */
 public class BlendshapeScoreForTest {
 
   private static float[] shapes(int len) {
@@ -49,14 +49,57 @@ public class BlendshapeScoreForTest {
   }
 
   @Test
-  public void smile_usesMaxOfLeftAndRight() {
+  public void smile_subtractsMouthSide_clampedAtZero() {
     float[] b = shapes(52);
     b[44] = 0.2f;
-    b[45] = 0.8f;
-    assertEquals(0.8f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.SMILE, b), 1e-5);
-    b[44] = 0.9f;
-    b[45] = 0.1f;
-    assertEquals(0.9f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.SMILE, b), 1e-5);
+    b[45] = 0.8f; // smileMax = 0.8
+    b[39] = 0.1f;
+    b[33] = 0.3f; // mouthSideMax = 0.3
+    assertEquals(0.5f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.SMILE, b), 1e-5);
+    // When mouth side dominates, smile score is 0.
+    b[33] = 0.9f;
+    assertEquals(0.f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.SMILE, b), 1e-5);
+  }
+
+  @Test
+  public void mouthLeft_subtractsSmile_clampedAtZero() {
+    float[] b = shapes(52);
+    b[39] = 0.7f; // mouthLeft
+    b[44] = 0.2f;
+    b[45] = 0.1f; // smileMax = 0.2
+    assertEquals(0.5f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.MOUTH_LEFT, b), 1e-5);
+    b[44] = 0.8f;
+    assertEquals(0.f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.MOUTH_LEFT, b), 1e-5);
+  }
+
+  @Test
+  public void mouthRight_subtractsSmile_clampedAtZero() {
+    float[] b = shapes(52);
+    b[33] = 0.6f; // mouthRight
+    b[44] = 0.1f;
+    b[45] = 0.15f; // smileMax = 0.15
+    assertEquals(0.45f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.MOUTH_RIGHT, b), 1e-5);
+  }
+
+  @Test
+  public void eyeBlinkLeft_isDifferenceFromRight() {
+    float[] b = shapes(52);
+    b[9] = 0.9f;
+    b[10] = 0.2f;
+    assertEquals(0.7f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.EYE_BLINK_LEFT, b), 1e-5);
+    // Both closed (normal blink) → left-only score ~0
+    b[10] = 0.85f;
+    assertEquals(0.05f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.EYE_BLINK_LEFT, b), 1e-5);
+    b[10] = 0.95f;
+    assertEquals(0.f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.EYE_BLINK_LEFT, b), 1e-5);
+  }
+
+  @Test
+  public void eyeBlinkRight_isDifferenceFromLeft() {
+    float[] b = shapes(52);
+    b[9] = 0.1f;
+    b[10] = 0.8f;
+    assertEquals(0.7f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.EYE_BLINK_RIGHT, b), 1e-5);
   }
 
   @Test
@@ -68,11 +111,14 @@ public class BlendshapeScoreForTest {
   }
 
   @Test
-  public void doubleBlink_previewScore_usesMaxBlink() {
+  public void doubleBlink_usesMinBlink() {
     float[] b = shapes(52);
     b[9] = 0.4f;
     b[10] = 0.95f;
-    assertEquals(0.95f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.DOUBLE_BLINK, b), 1e-5);
+    assertEquals(0.4f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.DOUBLE_BLINK, b), 1e-5);
+    b[9] = 0.9f;
+    b[10] = 0.85f;
+    assertEquals(0.85f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.DOUBLE_BLINK, b), 1e-5);
   }
 
   @Test
@@ -81,13 +127,9 @@ public class BlendshapeScoreForTest {
     b[3] = 0.55f;
     b[38] = 0.66f;
     b[6] = 0.77f;
-    b[9] = 0.11f;
-    b[10] = 0.22f;
     assertEquals(0.55f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.BROWS_INNER_UP, b), 1e-5);
     assertEquals(0.66f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.MOUTH_PUCKER, b), 1e-5);
     assertEquals(0.77f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.CHEEK_PUFF, b), 1e-5);
-    assertEquals(0.11f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.EYE_BLINK_LEFT, b), 1e-5);
-    assertEquals(0.22f, BlendshapeEventTriggerConfig.scoreFor(Blendshape.EYE_BLINK_RIGHT, b), 1e-5);
   }
 
   @Test

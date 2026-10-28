@@ -93,10 +93,10 @@
     <string name="blendshape_mouth_pucker">Pucker</string>
     <string name="blendshape_smile">Smile</string>
     <string name="blendshape_cheek_puff">Cheek puff</string>
-    <string name="blendshape_eye_blink_left">Blink left eye</string>
-    <string name="blendshape_eye_blink_right">Blink right eye</string>
+    <string name="blendshape_eye_blink_left">Blink left eye (other eye open)</string>
+    <string name="blendshape_eye_blink_right">Blink right eye (other eye open)</string>
     <string name="blendshape_eyes_wide">Eyes wide</string>
-    <string name="blendshape_double_blink">Double blink ×2</string>
+    <string name="blendshape_double_blink">Both eyes blink twice quickly</string>
     <string name="blendshape_none_short">None</string>
 
     <!-- Gesture size -->

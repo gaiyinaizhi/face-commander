@@ -15,9 +15,108 @@
 -->
 
 <resources>
-    <string name="app_name">FaceCommander</string>
+    <string name="app_name">面部指令</string>
 
+    <!-- Common actions -->
+    <string name="btn_next">Next</string>
+    <string name="btn_back">Back</string>
+    <string name="btn_done">Done</string>
+    <string name="btn_add">Add</string>
+    <string name="btn_edit">Edit</string>
+    <string name="btn_allow">Allow</string>
+    <string name="btn_deny">Deny</string>
+    <string name="btn_exit">Exit</string>
+    <string name="btn_setting">Setting  &gt;</string>
+    <string name="setting_completed">Setting Completed!</string>
+    <string name="gesture_current_suffix">\n(Current)</string>
+    <string name="gesture_in_use_suffix">\n(In use)</string>
 
+    <!-- Main -->
+    <string name="use_face_commander">使用面部指令</string>
+    <string name="show_cursor">Show cursor</string>
+    <string name="show_camera_preview">Show camera preview</string>
+    <string name="setup_gestures">Set up gestures</string>
+    <string name="setup_gestures_desc">Select which facial gesture you want to use for each action</string>
+    <string name="adjust_cursor_speed">Adjust cursor speed</string>
+    <string name="adjust_cursor_speed_desc">Your cursor will follow your head movement</string>
+    <string name="watch_tutorial">Watch the tutorial</string>
+
+    <!-- Permissions -->
+    <string name="grant_access">Grant access</string>
+    <string name="access_camera_title">Access Camera</string>
+    <string name="access_camera_message">Allow 面部指令 to access \nthe camera?</string>
+    <string name="accessibility_dialog_title">Allow 面部指令 to have full control of your device?</string>
+    <string name="accessibility_dialog_message">Full control is appropriate for apps \nthat help you with accessibility \nneeds, but not for most apps.</string>
+    <string name="grant_accessibility_description">Change permissions in your device’s \napp settings. Give 面部指令 access to \nAccessibility.</string>
+    <string name="grant_camera_description">Change permissions in your device’s \napp settings. Give 面部指令 access to \nCamera.</string>
+
+    <!-- Tutorial -->
+    <string name="tutorial_title">Control your phone with facial gestures</string>
+    <string name="tutorial_body">面部指令 helps you control your phone using facial gestures and head movements. You can learn how to set up gestures in the tutorial video.</string>
+    <string name="tutorial_footer">You can also watch the tutorial anytime after setup</string>
+    <string name="tutorial_phone_stand_title">Put your phone in front of you</string>
+    <string name="tutorial_phone_stand_body">Make sure the camera is stable, with a clear view of your face.</string>
+
+    <!-- Cursor binding -->
+    <string name="cursor_binding_intro">Choose facial gesture for each action. You can also adjust the gesture\'s sensitivity.</string>
+    <string name="title_setup_gestures">Set up gestures</string>
+    <string name="action_select">Select</string>
+    <string name="action_tap_bottom_right">Tap bottom right</string>
+    <string name="action_swipe_up_page">Swipe up (page)</string>
+    <string name="action_home">Home</string>
+    <string name="action_back">Back</string>
+    <string name="action_notifications">Notifications</string>
+    <string name="action_pause_unpause">Pause / Unpause</string>
+    <string name="action_reset_cursor">Reset Cursor to center</string>
+    <string name="action_touch_and_hold">Touch and hold</string>
+    <string name="action_all_apps">All Apps</string>
+    <string name="action_none">None</string>
+    <string name="action_reset">Reset</string>
+    <string name="action_swipe_left">Swipe left</string>
+    <string name="action_swipe_right">Swipe right</string>
+    <string name="action_swipe_up">Swipe up</string>
+    <string name="action_swipe_down">Swipe down</string>
+    <string name="action_drag_toggle">Drag toggle</string>
+    <string name="action_notification">Notification</string>
+
+    <!-- Blendshapes / gestures -->
+    <string name="blendshape_none">No binding</string>
+    <string name="blendshape_open_mouth">Open mouth</string>
+    <string name="blendshape_mouth_left">Mouth left</string>
+    <string name="blendshape_mouth_right">Mouth right</string>
+    <string name="blendshape_roll_lower_mouth">Roll lower mouth</string>
+    <string name="blendshape_raise_right_eyebrow">Raise right eyebrow</string>
+    <string name="blendshape_raise_left_eyebrow">Raise left eyebrow</string>
+    <string name="blendshape_lower_right_eyebrow">Lower right eyebrow</string>
+    <string name="blendshape_lower_left_eyebrow">Lower left eyebrow</string>
+    <string name="blendshape_none_short">None</string>
+
+    <!-- Gesture size -->
+    <string name="title_adjust_gesture_sensitivity">Adjust gesture sensitivity</string>
+    <string name="gesture_size_hint_short">Perform the gesture to adjust the sensitive.</string>
+    <string name="gesture_size_title">Gesture size</string>
+    <string name="gesture_size_body">When you perform the gesture, it will register below. To find the right sensitivity for you, adjust the slider to match the length of the green line.</string>
+    <string name="gesture_size_body_land">Set how prominent your gesture has to be in order to trigger the action.</string>
+    <string name="smaller">Smaller</string>
+    <string name="bigger">Bigger</string>
+    <string name="perform_open_mouth_placeholder">Perform \"Open mouth\"</string>
+    <string name="perform_gesture_format">Perform \"%1$s\"</string>
+
+    <!-- Cursor speed -->
+    <string name="title_adjust_cursor_speed">Adjust cursor speed</string>
+    <string name="cursor_speed_intro">Your cursor will follow your head movement. You can adjust how quickly your cursor moves in each direction.</string>
+    <string name="move_up">Move up</string>
+    <string name="move_down">Move down</string>
+    <string name="move_right">Move right</string>
+    <string name="move_left">Move left</string>
+    <string name="smooth_pointer">Smooth pointer</string>
+    <string name="safety_trigger_delay">Safety Trigger Delay</string>
+    <string name="hold_time_ms">Hold time(ms)</string>
+    <string name="slower">Slower</string>
+    <string name="faster">Faster</string>
+
+    <!-- Choose gesture default description (overwritten in code) -->
+    <string name="choose_gesture_default_desc">Choose a facial gesture that will select items on your phone, like apps, text, buttons, and more</string>
 
     <string-array name="event_type_description_keys">
         <item>CURSOR_TOUCH</item>
@@ -32,8 +131,6 @@
         <item>SHOW_APPS</item>
     </string-array>
 
-
-
     <string-array name="event_type_description_keys_values">
         <item>Choose a facial gesture that will select items on your phone, like apps, text, buttons, and more</item>
         <item>Choose a facial gesture that will tap the bottom-right of the screen (for page turn in reading apps)</item>
@@ -43,19 +140,7 @@
         <item>Choose a facial gesture that will open your notifications</item>
         <item>Choose a facial gesture that will pause or unpause your cursor</item>
         <item>Choose a facial gesture that will reset your cursor position</item>
-        <item>Choose a facial gesture that will touch \&amp; hold, otherwise known as a long press, on your phone</item>
+        <item>Choose a facial gesture that will touch &amp; hold, otherwise known as a long press, on your phone</item>
         <item>Choose a facial gesture that will open your all apps</item>
-
     </string-array>
-
-
-
-
-
-
-
-
-
-
-
 </resources>

@@ -33,8 +33,8 @@ public class AppIdentityTest {
   }
 
   @Test
-  public void appName_isFaceCommander() {
+  public void appName_isMianBuZhiLing() {
     Context context = ApplicationProvider.getApplicationContext();
-    assertEquals("FaceCommander", context.getString(R.string.app_name));
+    assertEquals("面部指令", context.getString(R.string.app_name));
   }
 }

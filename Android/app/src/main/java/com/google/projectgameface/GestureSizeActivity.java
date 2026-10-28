@@ -90,7 +90,7 @@ public class GestureSizeActivity extends AppCompatActivity {
 
         //setting actionbar
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Adjust gesture sensitivity");
+        getSupportActionBar().setTitle(getString(R.string.title_adjust_gesture_sensitivity));
 
         //Check if service is enabled.
         checkIfServiceEnabled();
@@ -106,8 +106,8 @@ public class GestureSizeActivity extends AppCompatActivity {
 
         TextView targetGesture = findViewById(R.id.targetGesture);
 
-        String beautifyBlendshapeName = BlendshapeEventTriggerConfig.BEAUTIFY_BLENDSHAPE_NAME.get(selectedGesture);
-        targetGesture.setText("Perform \""+beautifyBlendshapeName+"\"");
+        String beautifyBlendshapeName = BlendshapeEventTriggerConfig.getBeautifyBlendshapeName(this, selectedGesture);
+        targetGesture.setText(getString(R.string.perform_gesture_format, beautifyBlendshapeName));
 
 
         stateReceiver = new BroadcastReceiver() {
@@ -170,7 +170,7 @@ public class GestureSizeActivity extends AppCompatActivity {
             BlendshapeEventTriggerConfig.writeBindingConfig(getBaseContext(), selectedGesture, pageEventType,
                 thresholdInUi);
             try {
-                CharSequence text = "Setting Completed!";
+                CharSequence text = getString(R.string.setting_completed);
                 int duration = Toast.LENGTH_LONG;
                 Toast toast = Toast.makeText(getBaseContext(), text, duration);
                 toast.show();

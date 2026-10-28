@@ -97,6 +97,75 @@ public class BlendshapeEventTriggerConfig {
 
 
 
+
+  /** Localized display name for a blendshape (UI only). */
+  public static String getBeautifyBlendshapeName(Context context, Blendshape blendshape) {
+    if (blendshape == null) {
+      return context.getString(R.string.blendshape_none);
+    }
+    switch (blendshape) {
+      case OPEN_MOUTH:
+        return context.getString(R.string.blendshape_open_mouth);
+      case MOUTH_LEFT:
+        return context.getString(R.string.blendshape_mouth_left);
+      case MOUTH_RIGHT:
+        return context.getString(R.string.blendshape_mouth_right);
+      case ROLL_LOWER_MOUTH:
+        return context.getString(R.string.blendshape_roll_lower_mouth);
+      case RAISE_RIGHT_EYEBROW:
+        return context.getString(R.string.blendshape_raise_right_eyebrow);
+      case RAISE_LEFT_EYEBROW:
+        return context.getString(R.string.blendshape_raise_left_eyebrow);
+      case LOWER_RIGHT_EYEBROW:
+        return context.getString(R.string.blendshape_lower_right_eyebrow);
+      case LOWER_LEFT_EYEBROW:
+        return context.getString(R.string.blendshape_lower_left_eyebrow);
+      case NONE:
+      default:
+        return context.getString(R.string.blendshape_none);
+    }
+  }
+
+  /** Localized display name for an event type (UI title bar). */
+  public static String getBeautifyEventTypeName(Context context, EventType eventType) {
+    if (eventType == null) {
+      return context.getString(R.string.action_none);
+    }
+    switch (eventType) {
+      case CURSOR_TOUCH:
+        return context.getString(R.string.action_select);
+      case TAP_BOTTOM_RIGHT:
+        return context.getString(R.string.action_tap_bottom_right);
+      case SWIPE_UP_PAGE:
+        return context.getString(R.string.action_swipe_up_page);
+      case CURSOR_PAUSE:
+        return context.getString(R.string.action_pause_unpause);
+      case CURSOR_RESET:
+        return context.getString(R.string.action_reset);
+      case SWIPE_LEFT:
+        return context.getString(R.string.action_swipe_left);
+      case SWIPE_RIGHT:
+        return context.getString(R.string.action_swipe_right);
+      case SWIPE_UP:
+        return context.getString(R.string.action_swipe_up);
+      case SWIPE_DOWN:
+        return context.getString(R.string.action_swipe_down);
+      case DRAG_TOGGLE:
+        return context.getString(R.string.action_drag_toggle);
+      case HOME:
+        return context.getString(R.string.action_home);
+      case BACK:
+        return context.getString(R.string.action_back);
+      case SHOW_NOTIFICATION:
+        return context.getString(R.string.action_notification);
+      case SHOW_APPS:
+        return context.getString(R.string.action_all_apps);
+      case NONE:
+      default:
+        return context.getString(R.string.action_none);
+    }
+  }
+
   /** Allowed blendshape that our app can use and its array index (from MediaPipe's). */
   public enum Blendshape {
     NONE(-1),

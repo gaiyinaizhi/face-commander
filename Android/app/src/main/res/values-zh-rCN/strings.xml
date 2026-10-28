@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright 2024 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<resources>
+    <string name="app_name">面部指令</string>
+
+    <string name="btn_next">下一步</string>
+    <string name="btn_back">返回</string>
+    <string name="btn_done">完成</string>
+    <string name="btn_add">添加</string>
+    <string name="btn_edit">编辑</string>
+    <string name="btn_allow">允许</string>
+    <string name="btn_deny">拒绝</string>
+    <string name="btn_exit">退出</string>
+    <string name="btn_setting">前往设置  &gt;</string>
+    <string name="setting_completed">设置完成！</string>
+    <string name="gesture_current_suffix">\n（当前）</string>
+    <string name="gesture_in_use_suffix">\n（使用中）</string>
+
+    <string name="use_face_commander">使用面部指令</string>
+    <string name="show_cursor">显示光标</string>
+    <string name="show_camera_preview">显示摄像头预览</string>
+    <string name="setup_gestures">设置手势</string>
+    <string name="setup_gestures_desc">为每个操作选择要用的面部手势</string>
+    <string name="adjust_cursor_speed">调节光标速度</string>
+    <string name="adjust_cursor_speed_desc">光标会跟随你的头部移动</string>
+    <string name="watch_tutorial">观看教程</string>
+
+    <string name="grant_access">授予权限</string>
+    <string name="access_camera_title">访问摄像头</string>
+    <string name="access_camera_message">允许面部指令访问摄像头吗？</string>
+    <string name="accessibility_dialog_title">允许面部指令完全控制你的设备吗？</string>
+    <string name="accessibility_dialog_message">完全控制权限适合用于辅助功能类应用，大多数应用并不需要。</string>
+    <string name="grant_accessibility_description">请在设备的应用设置中更改权限。授予面部指令“无障碍”访问权限。</string>
+    <string name="grant_camera_description">请在设备的应用设置中更改权限。授予面部指令“摄像头”访问权限。</string>
+
+    <string name="tutorial_title">用面部手势控制手机</string>
+    <string name="tutorial_body">面部指令可让你通过面部手势和头部动作来控制手机。你可以在教程视频中学习如何设置手势。</string>
+    <string name="tutorial_footer">设置完成后，你也可以随时回来观看教程</string>
+    <string name="tutorial_phone_stand_title">把手机放在面前</string>
+    <string name="tutorial_phone_stand_body">请确保摄像头稳定，并能清楚看到你的面部。</string>
+
+    <string name="cursor_binding_intro">为每个操作选择面部手势，也可以调节手势灵敏度。</string>
+    <string name="title_setup_gestures">设置手势</string>
+    <string name="action_select">选择</string>
+    <string name="action_tap_bottom_right">点击右下角</string>
+    <string name="action_swipe_up_page">上滑翻页</string>
+    <string name="action_home">主屏幕</string>
+    <string name="action_back">返回</string>
+    <string name="action_notifications">通知</string>
+    <string name="action_pause_unpause">暂停 / 继续</string>
+    <string name="action_reset_cursor">重置光标到中心</string>
+    <string name="action_touch_and_hold">按住不放</string>
+    <string name="action_all_apps">全部应用</string>
+    <string name="action_none">无</string>
+    <string name="action_reset">重置</string>
+    <string name="action_swipe_left">向左滑动</string>
+    <string name="action_swipe_right">向右滑动</string>
+    <string name="action_swipe_up">向上滑动</string>
+    <string name="action_swipe_down">向下滑动</string>
+    <string name="action_drag_toggle">拖动开关</string>
+    <string name="action_notification">通知</string>
+
+    <string name="blendshape_none">无绑定</string>
+    <string name="blendshape_open_mouth">张嘴</string>
+    <string name="blendshape_mouth_left">嘴向左</string>
+    <string name="blendshape_mouth_right">嘴向右</string>
+    <string name="blendshape_roll_lower_mouth">卷下唇</string>
+    <string name="blendshape_raise_right_eyebrow">挑右眉</string>
+    <string name="blendshape_raise_left_eyebrow">挑左眉</string>
+    <string name="blendshape_lower_right_eyebrow">压右眉</string>
+    <string name="blendshape_lower_left_eyebrow">压左眉</string>
+    <string name="blendshape_none_short">无</string>
+
+    <string name="title_adjust_gesture_sensitivity">调节手势灵敏度</string>
+    <string name="gesture_size_hint_short">做出手势以调节灵敏度。</string>
+    <string name="gesture_size_title">手势幅度</string>
+    <string name="gesture_size_body">做出手势后，下方会显示检测结果。请调节滑块，使灵敏度与绿色条长度匹配，找到适合你的设置。</string>
+    <string name="gesture_size_body_land">设置触发操作所需的手势幅度。</string>
+    <string name="smaller">更小</string>
+    <string name="bigger">更大</string>
+    <string name="perform_open_mouth_placeholder">请做出“张嘴”</string>
+    <string name="perform_gesture_format">请做出“%1$s”</string>
+
+    <string name="title_adjust_cursor_speed">调节光标速度</string>
+    <string name="cursor_speed_intro">光标会跟随你的头部移动。你可以分别调节各个方向的移动速度。</string>
+    <string name="move_up">向上移动</string>
+    <string name="move_down">向下移动</string>
+    <string name="move_right">向右移动</string>
+    <string name="move_left">向左移动</string>
+    <string name="smooth_pointer">平滑指针</string>
+    <string name="safety_trigger_delay">安全触发延迟</string>
+    <string name="hold_time_ms">按住时长(毫秒)</string>
+    <string name="slower">更慢</string>
+    <string name="faster">更快</string>
+
+    <string name="choose_gesture_default_desc">选择一个面部手势，用于在手机上选择应用、文字、按钮等项目</string>
+
+    <string-array name="event_type_description_keys">
+        <item>CURSOR_TOUCH</item>
+        <item>TAP_BOTTOM_RIGHT</item>
+        <item>SWIPE_UP_PAGE</item>
+        <item>HOME</item>
+        <item>BACK</item>
+        <item>SHOW_NOTIFICATION</item>
+        <item>CURSOR_PAUSE</item>
+        <item>CURSOR_RESET</item>
+        <item>DRAG_TOGGLE</item>
+        <item>SHOW_APPS</item>
+    </string-array>
+
+    <string-array name="event_type_description_keys_values">
+        <item>选择一个面部手势，用于在手机上选择应用、文字、按钮等项目</item>
+        <item>选择一个面部手势，用于点击屏幕右下角（适合阅读类应用翻页）</item>
+        <item>选择一个面部手势，用于从屏幕中部向上滑动（适合阅读类应用翻页）</item>
+        <item>选择一个面部手势，用于打开手机主屏幕</item>
+        <item>选择一个面部手势，用于返回上一界面</item>
+        <item>选择一个面部手势，用于打开通知栏</item>
+        <item>选择一个面部手势，用于暂停或继续光标</item>
+        <item>选择一个面部手势，用于重置光标位置</item>
+        <item>选择一个面部手势，用于在手机上长按（按住不放）</item>
+        <item>选择一个面部手势，用于打开全部应用</item>
+    </string-array>
+</resources>

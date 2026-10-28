@@ -79,7 +79,7 @@ public class CursorSpeed extends AppCompatActivity {
 
         // setting actionbar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Adjust cursor speed");
+        getSupportActionBar().setTitle(getString(R.string.title_adjust_cursor_speed));
 
         // SeekBar Binding and Textview Progress
         seekBarMu = (SeekBar) findViewById(R.id.seekBarMU);

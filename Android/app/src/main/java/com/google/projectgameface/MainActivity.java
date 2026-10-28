@@ -231,14 +231,14 @@ public class MainActivity extends AppCompatActivity {
         // Check Camera Permission
         if(!checkCameraPermission()){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            String alertMsg = "Allow Project GameFace to access \nthe camera?";
-            builder.setTitle("Access Camera");
+            String alertMsg = getString(R.string.access_camera_message);
+            builder.setTitle(getString(R.string.access_camera_title));
             builder.setMessage(alertMsg);
-            builder.setPositiveButton("Allow", (dialog, which) -> {
+            builder.setPositiveButton(getString(R.string.btn_allow), (dialog, which) -> {
                 RequestCameraPermission();
                 dialog.dismiss();
             });
-            builder.setNegativeButton("Deny", (dialog, which) -> {
+            builder.setNegativeButton(getString(R.string.btn_deny), (dialog, which) -> {
                 dialog.cancel();
                 Intent intent = new Intent(getBaseContext(), GrantPermissionActivity.class);
                 intent.putExtra("permission", "grantCamera");
@@ -266,14 +266,14 @@ public class MainActivity extends AppCompatActivity {
         // Check Accessibility Permission
         if(!checkAccessibilityPermission()){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            String alertMsg = "Full control is appropriate for apps \nthat help you with accessibility \nneeds, but not for most apps.";
-            builder.setTitle("Allow Project GameFace to have full control of your device?");
+            String alertMsg = getString(R.string.accessibility_dialog_message);
+            builder.setTitle(getString(R.string.accessibility_dialog_title));
             builder.setMessage(alertMsg);
-            builder.setPositiveButton("Allow", (dialog, which) -> {
+            builder.setPositiveButton(getString(R.string.btn_allow), (dialog, which) -> {
                 RequestAccessibilityPermission();
                 dialog.dismiss();
             });
-            builder.setNegativeButton("Deny", (dialog, which) -> {
+            builder.setNegativeButton(getString(R.string.btn_deny), (dialog, which) -> {
                 dialog.cancel();
                 Intent intent = new Intent(getBaseContext(), GrantPermissionActivity.class);
                 intent.putExtra("permission", "grantAccessibility");

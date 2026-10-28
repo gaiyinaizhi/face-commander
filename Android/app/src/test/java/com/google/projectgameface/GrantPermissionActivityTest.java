@@ -57,7 +57,7 @@ public class GrantPermissionActivityTest {
 
         GrantPermissionActivity grantPermissionActivityResume = Robolectric.buildActivity(GrantPermissionActivity.class, mockIntent).create().start().resume().get();
         String description = grantPermissionActivityResume.getDescriptionTextViewValue();
-        String actual = "Change permissions in your device’s \napp settings. Give GameFace access to \nCamera.";
+        String actual = grantPermissionActivityResume.getString(R.string.grant_camera_description);
 
         assertEquals(actual, description);
     }
@@ -69,7 +69,7 @@ public class GrantPermissionActivityTest {
 
         GrantPermissionActivity grantPermissionActivityResume = Robolectric.buildActivity(GrantPermissionActivity.class, mockIntent).create().start().resume().get();
         String description = grantPermissionActivityResume.getDescriptionTextViewValue();
-        String actual = "Change permissions in your device’s \napp settings. Give GameFace access to \nAccessibility.";
+        String actual = grantPermissionActivityResume.getString(R.string.grant_accessibility_description);
 
         assertEquals(actual, description);
     }

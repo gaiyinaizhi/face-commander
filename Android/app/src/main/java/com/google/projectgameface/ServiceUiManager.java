@@ -71,6 +71,15 @@ public class ServiceUiManager {
   /** Open setting page. */
   public Button settingBtn;
 
+  /** Pause / resume face monitoring (expanded box only). */
+  public Button pauseResumeBtn;
+
+  /** Dismiss floating assist UI without stopping the accessibility service. */
+  public Button closeFloatAssistBtn;
+
+  /** Bottom-right Pause + Close row on the expanded camera box. */
+  public View floatAssistControls;
+
   /** Realtime video feed from camera. */
   public PreviewView innerCameraImageView;
 
@@ -162,7 +171,7 @@ public class ServiceUiManager {
   public void updateStatusIcon(boolean isPausing, boolean isFaceVisible) {
     switch (cameraBoxState) {
       case MINIMIZE:
-        // If pause always show ⏸
+        // If pause always show ⏸ (must stay obvious on the minimized float icon).
         if (isPausing) {
           nextIconState = FloatIconState.PAUSE_ICON;
         } else {
@@ -181,27 +190,58 @@ public class ServiceUiManager {
         break;
     }
 
-    // If nothing changed, no need to update.
+    updatePauseResumeButton(isPausing);
+
+    // If nothing changed, no need to update icon.
     if (nextIconState == currentIconState) {
       return;
     }
 
-    // Actually change the icon.
-    switch (nextIconState) {
+    applyFloatIconState(nextIconState);
+  }
+
+  /** Force-apply minimized / status icon (used after pause toggle). */
+  public void applyFloatIconState(FloatIconState state) {
+    nextIconState = state;
+    switch (state) {
       case MINIMIZE_ICON:
         cameraBoxPopBtn.setImageResource(R.drawable.set_3_arrow);
+        cameraBoxPopBtn.setContentDescription(
+            parentContext.getString(R.string.float_minimize_cd));
         break;
       case FOUND_FACE_ICON:
         cameraBoxPopBtn.setImageResource(R.drawable.set_3_okay);
+        cameraBoxPopBtn.setContentDescription(
+            parentContext.getString(R.string.float_face_ok_cd));
         break;
       case NO_FACE_ICON:
         cameraBoxPopBtn.setImageResource(R.drawable.set_3_warning);
+        cameraBoxPopBtn.setContentDescription(
+            parentContext.getString(R.string.float_no_face_cd));
         break;
       case PAUSE_ICON:
         cameraBoxPopBtn.setImageResource(R.drawable.set_3_paused);
+        cameraBoxPopBtn.setContentDescription(
+            parentContext.getString(R.string.float_paused_cd));
         break;
     }
-    currentIconState = nextIconState;
+    currentIconState = state;
+  }
+
+  /** Sync Pause/Resume button label with monitoring state. */
+  public void updatePauseResumeButton(boolean isPausing) {
+    if (pauseResumeBtn == null) {
+      return;
+    }
+    if (isPausing) {
+      pauseResumeBtn.setText(R.string.float_resume);
+      pauseResumeBtn.setContentDescription(
+          parentContext.getString(R.string.float_resume_cd));
+    } else {
+      pauseResumeBtn.setText(R.string.float_pause);
+      pauseResumeBtn.setContentDescription(
+          parentContext.getString(R.string.float_pause_cd));
+    }
   }
 
   /** Create floating cursor image on the screen. */
@@ -325,11 +365,23 @@ public class ServiceUiManager {
     saveCameraBoxPosition("defaultHeight", DEFAULT_FLOATING_CAMERA_HEIGHT);
 
     settingBtn = cameraBoxView.findViewById(R.id.settingBtn);
+    pauseResumeBtn = cameraBoxView.findViewById(R.id.pauseResumeBtn);
+    closeFloatAssistBtn = cameraBoxView.findViewById(R.id.closeFloatAssistBtn);
+    floatAssistControls = cameraBoxView.findViewById(R.id.floatAssistControls);
 
     mainActivityIntent = new Intent(parentContext, MainActivity.class);
     mainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     settingBtn.setOnClickListener(v -> parentContext.startActivity(mainActivityIntent));
 
+    pauseResumeBtn.setOnClickListener(
+        v -> {
+          Intent pauseIntent = new Intent("CHANGE_SERVICE_STATE");
+          pauseIntent.putExtra(
+              "state", CursorAccessibilityService.ServiceState.PAUSE.ordinal());
+          parentContext.sendBroadcast(pauseIntent);
+        });
+
+    closeFloatAssistBtn.setOnClickListener(v -> dismissFloatAssistByUser());
 
     flyAnim = ValueAnimator.ofFloat(0f, 1f);
 
@@ -409,6 +461,16 @@ public class ServiceUiManager {
     }
   }
 
+  /**
+   * User tapped Close: hide floating assist and persist dismissed so it stays gone across
+   * pause/resume and config changes until Main reopens it. Does not stop the service.
+   */
+  public void dismissFloatAssistByUser() {
+    ReadingPagerPreferences.setFloatAssistDismissed(parentContext, true);
+    hideCameraBox();
+    Log.i(TAG, "dismissFloatAssistByUser: floating assist hidden");
+  }
+
   public void showCameraBox() {
     updateScreenInfo();
     try {
@@ -447,17 +509,24 @@ public class ServiceUiManager {
     Log.i(TAG, "maximizeCameraBox");
     cameraBoxView.findViewById(R.id.previewVideo).setVisibility(View.VISIBLE);
     settingBtn.setVisibility(View.VISIBLE);
+    if (floatAssistControls != null) {
+      floatAssistControls.setVisibility(View.VISIBLE);
+    }
     resizeCameraBox(DEFAULT_FLOATING_CAMERA_WIDTH, DEFAULT_FLOATING_CAMERA_HEIGHT);
 
     cameraBoxView.findViewById(R.id.popBtn).setBackground(null);
     cameraBoxOverlay.setVisibility(View.VISIBLE);
     cameraBoxState = CameraBoxState.MAXIMIZE;
+    applyFloatIconState(FloatIconState.MINIMIZE_ICON);
   }
 
   public void minimizeCameraBox() {
     Log.i(TAG, "minimizeCameraBox");
     cameraBoxView.findViewById(R.id.previewVideo).setVisibility(View.GONE);
     settingBtn.setVisibility(View.GONE);
+    if (floatAssistControls != null) {
+      floatAssistControls.setVisibility(View.GONE);
+    }
     resizeCameraBox(cameraBoxPopBtn.getWidth(), cameraBoxPopBtn.getHeight());
     cameraBoxOverlay.setBackground(null);
     cameraBoxOverlay.setVisibility(View.INVISIBLE);
@@ -465,6 +534,9 @@ public class ServiceUiManager {
         .findViewById(R.id.popBtn)
         .setBackground(ContextCompat.getDrawable(parentContext, R.drawable.custom_imagebtn_camera));
     cameraBoxState = CameraBoxState.MINIMIZE;
+    // Keep current pause/face icon path; next updateStatusIcon call will paint PAUSE if needed.
+    // Reset so the next status update always re-applies (avoids stale minimize arrow).
+    currentIconState = FloatIconState.MINIMIZE_ICON;
   }
 
   /** Fly floatCamView to target location */
@@ -638,6 +710,9 @@ public class ServiceUiManager {
           cameraBoxView.findViewById(R.id.popBtn).setBackground(null);
           cameraBoxView.findViewById(R.id.popBtn).setVisibility(View.INVISIBLE);
           cameraBoxView.findViewById(R.id.settingBtn).setVisibility(View.INVISIBLE);
+          if (floatAssistControls != null) {
+            floatAssistControls.setVisibility(View.INVISIBLE);
+          }
           cameraBoxOverlay.setVisibility(View.INVISIBLE);
         }
       };
@@ -667,6 +742,9 @@ public class ServiceUiManager {
           playFlyCameraBoxAnimation((int) positionX, (int) positionY, 300);
           cameraBoxView.findViewById(R.id.popBtn).setVisibility(View.VISIBLE);
           cameraBoxView.findViewById(R.id.settingBtn).setVisibility(View.VISIBLE);
+          if (floatAssistControls != null && cameraBoxState == CameraBoxState.MAXIMIZE) {
+            floatAssistControls.setVisibility(View.VISIBLE);
+          }
         }
       };
 

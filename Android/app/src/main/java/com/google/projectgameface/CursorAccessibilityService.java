@@ -506,6 +506,12 @@ public class CursorAccessibilityService extends AccessibilityService implements 
             default:
         }
         serviceUiManager.setCameraBoxDraggable(true);
+        // Immediately refresh minimized pause icon + Pause/Resume button label.
+        boolean pausing = serviceState == ServiceState.PAUSE;
+        serviceUiManager.updateStatusIcon(pausing, checkFaceVisibleInFrame());
+        if (pausing && serviceUiManager.cameraBoxState == ServiceUiManager.CameraBoxState.MINIMIZE) {
+            serviceUiManager.applyFloatIconState(ServiceUiManager.FloatIconState.PAUSE_ICON);
+        }
     }
 
     /**
@@ -547,12 +553,15 @@ public class CursorAccessibilityService extends AccessibilityService implements 
         } else {
             serviceUiManager.hideCursor();
         }
-        if (ReadingPagerPreferences.isShowCameraPreview(this)) {
+        // Respect both show-preview opt-in and user Close (dismissed) flag.
+        if (ReadingPagerPreferences.shouldShowFloatAssist(this)) {
             serviceUiManager.showCameraBox();
             serviceUiManager.maximizeCameraBox();
         } else {
             serviceUiManager.hideCameraBox();
         }
+        serviceUiManager.updateStatusIcon(
+            serviceState == ServiceState.PAUSE, checkFaceVisibleInFrame());
     }
 
     public void enableService() {
@@ -748,8 +757,9 @@ public class CursorAccessibilityService extends AccessibilityService implements 
                 applyReadingPagerUi();
                 break;
             case PAUSE:
-                if (ReadingPagerPreferences.isShowCameraPreview(this)) {
+                if (ReadingPagerPreferences.shouldShowFloatAssist(this)) {
                     serviceUiManager.showCameraBox();
+                    serviceUiManager.updateStatusIcon(true, checkFaceVisibleInFrame());
                 }
                 break;
             case DISABLE:

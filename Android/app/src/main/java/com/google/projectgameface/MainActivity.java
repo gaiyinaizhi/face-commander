@@ -55,6 +55,16 @@ public class MainActivity extends AppCompatActivity {
     private boolean isServiceBound = false;
     private boolean keep = true;
 
+    private final android.widget.CompoundButton.OnCheckedChangeListener cameraPreviewSwitchListener =
+        (buttonView, isChecked) -> {
+            ReadingPagerPreferences.setShowCameraPreview(this, isChecked);
+            // Turning the switch on from Main clears a prior Close dismiss.
+            if (isChecked) {
+                ReadingPagerPreferences.setFloatAssistDismissed(this, false);
+            }
+            sendBroadcast(new Intent(ReadingPagerPreferences.ACTION_APPLY_UI));
+        };
+
 
 
     @Override
@@ -164,9 +174,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Switch showCameraPreviewSwitch = findViewById(R.id.showCameraPreviewSwitch);
-        showCameraPreviewSwitch.setChecked(ReadingPagerPreferences.isShowCameraPreview(this));
-        showCameraPreviewSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            ReadingPagerPreferences.setShowCameraPreview(this, isChecked);
+        showCameraPreviewSwitch.setOnCheckedChangeListener(cameraPreviewSwitchListener);
+        syncReadingPagerSwitches();
+
+        findViewById(R.id.reopenFloatAssistBtn).setOnClickListener(v -> {
+            ReadingPagerPreferences.reopenFloatAssist(this);
+            syncReadingPagerSwitches();
             sendBroadcast(new Intent(ReadingPagerPreferences.ACTION_APPLY_UI));
         });
 
@@ -218,7 +231,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         checkIfServiceEnabled();
+        syncReadingPagerSwitches();
+    }
 
+    /** Keep Main switches aligned with prefs (e.g. after Close on the floating assist). */
+    private void syncReadingPagerSwitches() {
+        Switch showCursorSwitch = findViewById(R.id.showCursorSwitch);
+        Switch showCameraPreviewSwitch = findViewById(R.id.showCameraPreviewSwitch);
+        if (showCursorSwitch != null) {
+            showCursorSwitch.setChecked(ReadingPagerPreferences.isShowCursor(this));
+        }
+        if (showCameraPreviewSwitch != null) {
+            // Avoid firing listener while syncing from prefs.
+            showCameraPreviewSwitch.setOnCheckedChangeListener(null);
+            // Reflect actual on-screen assist: dismissed counts as off for the switch UX.
+            boolean visible = ReadingPagerPreferences.shouldShowFloatAssist(this);
+            showCameraPreviewSwitch.setChecked(visible);
+            showCameraPreviewSwitch.setOnCheckedChangeListener(cameraPreviewSwitchListener);
+        }
     }
 
     @Override

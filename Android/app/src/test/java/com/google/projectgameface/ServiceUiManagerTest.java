@@ -27,7 +27,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import android.view.View;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(AndroidJUnit4.class)
 public class ServiceUiManagerTest {
@@ -56,5 +59,56 @@ public class ServiceUiManagerTest {
     TimeUnit.SECONDS.sleep(2);
     assertEquals(testUiServiceManager.cameraBoxLayoutParams.width, newWidth);
     assertEquals(testUiServiceManager.cameraBoxLayoutParams.height, newHeight);
+  }
+
+  @Test
+  public void expandedControls_pauseAndClosePresent_andHideOnMinimize() {
+    Context context = ApplicationProvider.getApplicationContext();
+    WindowManager windowManager = ContextCompat.getSystemService(context, WindowManager.class);
+    ServiceUiManager ui = new ServiceUiManager(context, windowManager);
+
+    assertNotNull(ui.pauseResumeBtn);
+    assertNotNull(ui.closeFloatAssistBtn);
+    assertNotNull(ui.floatAssistControls);
+    Assert.assertEquals(View.VISIBLE, ui.floatAssistControls.getVisibility());
+
+    ui.minimizeCameraBox();
+    Assert.assertEquals(View.GONE, ui.floatAssistControls.getVisibility());
+
+    ui.maximizeCameraBox();
+    Assert.assertEquals(View.VISIBLE, ui.floatAssistControls.getVisibility());
+  }
+
+  @Test
+  public void dismissFloatAssistByUser_persistsDismissFlag() {
+    Context context = ApplicationProvider.getApplicationContext();
+    ReadingPagerPreferences.prefs(context).edit().clear().apply();
+    ReadingPagerPreferences.setShowCameraPreview(context, true);
+    ReadingPagerPreferences.setFloatAssistDismissed(context, false);
+
+    WindowManager windowManager = ContextCompat.getSystemService(context, WindowManager.class);
+    ServiceUiManager ui = new ServiceUiManager(context, windowManager);
+    ui.dismissFloatAssistByUser();
+
+    Assert.assertTrue(ReadingPagerPreferences.isFloatAssistDismissed(context));
+    Assert.assertFalse(ReadingPagerPreferences.shouldShowFloatAssist(context));
+  }
+
+  @Test
+  public void minimizedPauseIcon_staysPauseWhenFaceVisible() {
+    Context context = ApplicationProvider.getApplicationContext();
+    WindowManager windowManager = ContextCompat.getSystemService(context, WindowManager.class);
+    ServiceUiManager ui = new ServiceUiManager(context, windowManager);
+    ui.minimizeCameraBox();
+
+    ui.updateStatusIcon(true, true);
+    Assert.assertEquals(ServiceUiManager.FloatIconState.PAUSE_ICON, ui.currentIconState);
+
+    // Face visibility must not override pause icon while paused.
+    ui.updateStatusIcon(true, false);
+    Assert.assertEquals(ServiceUiManager.FloatIconState.PAUSE_ICON, ui.currentIconState);
+
+    ui.applyFloatIconState(ServiceUiManager.FloatIconState.PAUSE_ICON);
+    Assert.assertEquals(ServiceUiManager.FloatIconState.PAUSE_ICON, ui.currentIconState);
   }
 }

@@ -49,6 +49,7 @@
             android:layout_width="42dp"
             android:layout_height="42dp"
             android:text="⚙"
+            android:contentDescription="@string/float_settings_cd"
             android:translationZ="92dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -75,10 +76,43 @@
             android:background="@null"
             android:visibility="visible"
             android:padding="6dp"
+            android:contentDescription="@string/float_minimize_cd"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
 
             />
+
+        <LinearLayout
+            android:id="@+id/floatAssistControls"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:translationZ="93dp"
+            android:padding="2dp"
+            app:layout_constraintBottom_toBottomOf="@+id/previewVideo"
+            app:layout_constraintEnd_toEndOf="@+id/previewVideo">
+
+            <Button
+                android:id="@+id/pauseResumeBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:minWidth="48dp"
+                android:paddingHorizontal="8dp"
+                android:text="@string/float_pause"
+                android:textSize="12sp"
+                android:contentDescription="@string/float_pause_cd" />
+
+            <Button
+                android:id="@+id/closeFloatAssistBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:minWidth="48dp"
+                android:layout_marginStart="4dp"
+                android:paddingHorizontal="8dp"
+                android:text="@string/float_close"
+                android:textSize="12sp"
+                android:contentDescription="@string/float_close_cd" />
+        </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

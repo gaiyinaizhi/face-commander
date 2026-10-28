@@ -248,10 +248,8 @@ public class ChooseGestureActivity extends AppCompatActivity {
 
 
         findViewById(R.id.backBtn).setOnClickListener(v -> {
-            Intent intentBack = new Intent(getBaseContext(), CursorBinding.class);
-            startActivity(intentBack);
+            // Parent CursorBinding is already on the stack; pop only.
             finish();
-
         });
 
 
@@ -271,15 +269,13 @@ public class ChooseGestureActivity extends AppCompatActivity {
                     Log.i(TAG, e.toString());
                 }
 
-                Intent intentBack = new Intent(getBaseContext(), CursorBinding.class);
-                intentBack.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intentBack);
+                // Pop back to existing CursorBinding; do not CLEAR_TASK.
                 finish();
             } else {
                 Intent intentGoGestureSize = new Intent(getBaseContext(), GestureSizeActivity.class);
                 intentGoGestureSize.putExtra("eventType", pageEventType);
                 intentGoGestureSize.putExtra("selectedGesture", selectedBlendshape);
-                intentGoGestureSize.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                // Keep ChooseGesture on the stack so back returns here.
                 startActivity(intentGoGestureSize);
             }
         });

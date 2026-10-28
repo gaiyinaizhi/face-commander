@@ -264,16 +264,14 @@ public class CursorBinding extends AppCompatActivity {
         }
 
 
-        // Make back button work as back action in device's navigation.
+        // Pop back to existing MainActivity; do not start a new one.
         OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                Intent intentHome = new Intent(CursorBinding.this, MainActivity.class);
-                startActivity(intentHome);
                 finish();
             }
         };
-        getOnBackPressedDispatcher().addCallback(this,onBackPressedCallback);
+        getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
 
     }
 
@@ -281,8 +279,6 @@ public class CursorBinding extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
       if (item.getItemId() == android.R.id.home) {
-        Intent intentHome = new Intent(this, MainActivity.class);
-        startActivity(intentHome);
         finish();
         return true;
       }

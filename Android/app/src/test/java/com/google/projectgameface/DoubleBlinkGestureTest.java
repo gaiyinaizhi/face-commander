@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/** Pure-logic tests for ticket 06 double-blink window. */
+/** Pure-logic tests for double-blink window + min open interval. */
 public class DoubleBlinkGestureTest {
   private static final float THRESHOLD = 0.5f;
 
@@ -33,17 +33,24 @@ public class DoubleBlinkGestureTest {
     detector = new DoubleBlinkGesture();
   }
 
-  /** Simulate a blink rising edge then release. */
+  /**
+   * Simulate a blink rising edge then a sustained release (>= MIN_OPEN_INTERVAL_MS).
+   */
   private boolean pulse(long riseMs) {
     assertFalse(detector.onScore(0.1f, THRESHOLD, riseMs - 1));
     boolean fired = detector.onScore(0.9f, THRESHOLD, riseMs);
-    detector.onScore(0.1f, THRESHOLD, riseMs + 50);
+    // Stay above briefly, then fall and remain below past the min open interval.
+    detector.onScore(0.9f, THRESHOLD, riseMs + 20);
+    detector.onScore(0.1f, THRESHOLD, riseMs + 40);
+    detector.onScore(
+        0.1f, THRESHOLD, riseMs + 40 + DoubleBlinkGesture.MIN_OPEN_INTERVAL_MS);
     return fired;
   }
 
   @Test
-  public void defaultWindowIs700Ms() {
-    assertEquals(700L, DoubleBlinkGesture.DEFAULT_WINDOW_MS);
+  public void defaultWindowIs1000Ms_andMinOpenIs100Ms() {
+    assertEquals(1000L, DoubleBlinkGesture.DEFAULT_WINDOW_MS);
+    assertEquals(100L, DoubleBlinkGesture.MIN_OPEN_INTERVAL_MS);
     assertEquals(2, DoubleBlinkGesture.REQUIRED_PULSES);
   }
 
@@ -56,10 +63,10 @@ public class DoubleBlinkGestureTest {
   @Test
   public void twoPulsesAcrossWindow_doNotMerge() {
     assertFalse(pulse(1000L));
-    // Outside 700ms window: starts a new window, does not fire.
-    assertFalse(pulse(1000L + 701L));
+    // Outside 1000ms window: starts a new window, does not fire.
+    assertFalse(pulse(1000L + 1001L));
     // Second of the new window fires.
-    assertTrue(pulse(1000L + 701L + 200L));
+    assertTrue(pulse(1000L + 1001L + 200L));
   }
 
   @Test
@@ -70,9 +77,47 @@ public class DoubleBlinkGestureTest {
   @Test
   public void thirdPulseAfterSuccessStartsNewComposite() {
     assertFalse(pulse(3000L));
-    assertTrue(pulse(3300L));
-    assertFalse(pulse(3600L));
-    assertTrue(pulse(3900L));
+    assertTrue(pulse(3500L));
+    assertFalse(pulse(4000L));
+    assertTrue(pulse(4500L));
+  }
+
+  @Test
+  public void jitterWithinSameBlink_doesNotCountAsSecondPulse() {
+    long t0 = 6000L;
+    // First rising edge.
+    assertFalse(detector.onScore(0.9f, THRESHOLD, t0));
+    // Brief dip below threshold (jitter), then rise again too soon.
+    detector.onScore(0.1f, THRESHOLD, t0 + 30);
+    assertFalse(
+        "rise after only 20ms open must be ignored",
+        detector.onScore(0.9f, THRESHOLD, t0 + 50));
+    assertEquals(1, detector.getPulseCount());
+    // Proper open interval, then second blink fires.
+    detector.onScore(0.1f, THRESHOLD, t0 + 60);
+    detector.onScore(0.1f, THRESHOLD, t0 + 60 + DoubleBlinkGesture.MIN_OPEN_INTERVAL_MS);
+    assertTrue(detector.onScore(0.9f, THRESHOLD, t0 + 60 + DoubleBlinkGesture.MIN_OPEN_INTERVAL_MS + 1));
+  }
+
+  @Test
+  public void openIntervalTooShort_doesNotCount() {
+    long t0 = 7000L;
+    assertFalse(detector.onScore(0.9f, THRESHOLD, t0));
+    detector.onScore(0.1f, THRESHOLD, t0 + 40);
+    // Rise at 40 + 50 = 90ms after fall — below MIN_OPEN_INTERVAL_MS (100).
+    assertFalse(detector.onScore(0.9f, THRESHOLD, t0 + 90));
+    assertEquals(1, detector.getPulseCount());
+  }
+
+  @Test
+  public void twoLegalPulsesInsideWindow_fire() {
+    long t0 = 8000L;
+    assertFalse(detector.onScore(0.9f, THRESHOLD, t0));
+    detector.onScore(0.1f, THRESHOLD, t0 + 50);
+    long secondRise = t0 + 50 + DoubleBlinkGesture.MIN_OPEN_INTERVAL_MS + 10;
+    assertTrue(
+        "second rising edge after sufficient open must fire",
+        detector.onScore(0.9f, THRESHOLD, secondRise));
   }
 
   @Test
@@ -82,12 +127,14 @@ public class DoubleBlinkGestureTest {
     long t0 = 5000L;
     assertFalse(detector.onScore(0.9f, THRESHOLD, t0)); // rise 1
     detector.onScore(0.1f, THRESHOLD, t0 + 40);
+    detector.onScore(0.1f, THRESHOLD, t0 + 40 + DoubleBlinkGesture.MIN_OPEN_INTERVAL_MS);
     // Still inside ActionCooldown.DURATION_MS (800) after first pulse — but we never fired.
     assertTrue(
         "intermediate pulse must not be treated as a dispatch",
         ActionCooldown.shouldDispatch(t0 + 100L, /* lastDispatchMs= */ 0L));
-    assertTrue(detector.onScore(0.9f, THRESHOLD, t0 + 300L)); // rise 2 completes
-    long lastDispatch = t0 + 300L;
+    long secondRise = t0 + 40 + DoubleBlinkGesture.MIN_OPEN_INTERVAL_MS + 10;
+    assertTrue(detector.onScore(0.9f, THRESHOLD, secondRise)); // rise 2 completes
+    long lastDispatch = secondRise;
     assertFalse(ActionCooldown.shouldDispatch(lastDispatch + 100L, lastDispatch));
     assertTrue(ActionCooldown.shouldDispatch(lastDispatch + ActionCooldown.DURATION_MS, lastDispatch));
   }

@@ -95,14 +95,15 @@ public class GestureSizeActivity extends AppCompatActivity {
         //Check if service is enabled.
         checkIfServiceEnabled();
 
-        scorePreview(true, selectedGesture.toString());
-
         SeekBar gestureSizeSeekBar = findViewById(R.id.gestureSizeSeekBar);
         thresholdInUi = preferences.getInt(pageEventType +"_size", seekBarDefaultValue * 10);
         thresholdInUi = MathUtils.clamp(thresholdInUi, SEEK_BAR_LOW_CLIP, SEEK_BAR_HIGH_CLIP);
         gestureSizeSeekBar.setMax(SEEK_BAR_MAXIMUM_VALUE);
         gestureSizeSeekBar.setMin(SEEK_BAR_MINIMUM_VALUE);
         gestureSizeSeekBar.setProgress(thresholdInUi / 10);
+
+        // Enable preview after thresholdInUi is known (DOUBLE_BLINK composite uses it).
+        scorePreview(true, selectedGesture.toString());
 
         TextView targetGesture = findViewById(R.id.targetGesture);
 
@@ -154,6 +155,7 @@ public class GestureSizeActivity extends AppCompatActivity {
             if(newValue<11){
                 thresholdInUi = newValue*10;
                 gestureSizeSeekBar.setProgress(newValue);
+                scorePreview(true, selectedGesture.toString());
             }
         });
 
@@ -163,6 +165,7 @@ public class GestureSizeActivity extends AppCompatActivity {
             if(newValue>-1){
                 thresholdInUi = newValue * 10;
                 gestureSizeSeekBar.setProgress(newValue);
+                scorePreview(true, selectedGesture.toString());
             }
         });
 
@@ -210,6 +213,7 @@ public class GestureSizeActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 thresholdInUi = seekBar.getProgress() * 10;
+                scorePreview(true, selectedGesture.toString());
             }
         });
 
@@ -246,6 +250,8 @@ public class GestureSizeActivity extends AppCompatActivity {
         Intent intent = new Intent("ENABLE_SCORE_PREVIEW");
         intent.putExtra("enable", status);
         intent.putExtra("blendshapesName", requestedScoreName);
+        // 0–1 threshold for DOUBLE_BLINK composite preview detector.
+        intent.putExtra("threshold", thresholdInUi / 100.f);
         sendBroadcast(intent);
     }
 

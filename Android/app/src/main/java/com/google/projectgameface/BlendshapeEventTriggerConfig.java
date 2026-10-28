@@ -212,8 +212,10 @@ public class BlendshapeEventTriggerConfig {
     /** Composite: max(eyeWideLeft=21, eyeWideRight=22). */
     EYES_WIDE(-11),
     /**
-     * Composite double both-eyes blink (ticket 06). Score for preview is
-     * max(eyeBlinkLeft, eyeBlinkRight); event firing uses {@link DoubleBlinkGesture}.
+     * Composite double both-eyes blink (ticket 06). Detection score is
+     * min(eyeBlinkLeft, eyeBlinkRight) so both eyes must close; event firing uses
+     * {@link DoubleBlinkGesture}. Sensitivity preview also routes through a
+     * DoubleBlinkGesture instance (not the raw min score alone).
      */
     DOUBLE_BLINK(-12);
     public final int value;
@@ -275,20 +277,36 @@ public class BlendshapeEventTriggerConfig {
     if (shape == null || shape == Blendshape.NONE || blendshapes == null) {
       return 0.f;
     }
-    switch (shape) {
-      case SMILE:
-        return Math.max(
+    float smileMax =
+        Math.max(
             safeGet(blendshapes, MOUTH_SMILE_LEFT_INDEX),
             safeGet(blendshapes, MOUTH_SMILE_RIGHT_INDEX));
+    float mouthSideMax =
+        Math.max(
+            safeGet(blendshapes, Blendshape.MOUTH_LEFT.value),
+            safeGet(blendshapes, Blendshape.MOUTH_RIGHT.value));
+    float blinkL = safeGet(blendshapes, EYE_BLINK_LEFT_INDEX);
+    float blinkR = safeGet(blendshapes, EYE_BLINK_RIGHT_INDEX);
+    switch (shape) {
+      case SMILE:
+        // Disambiguate from mouthLeft/Right which often co-activate with smile.
+        return Math.max(0.f, smileMax - mouthSideMax);
+      case MOUTH_LEFT:
+        return Math.max(0.f, safeGet(blendshapes, Blendshape.MOUTH_LEFT.value) - smileMax);
+      case MOUTH_RIGHT:
+        return Math.max(0.f, safeGet(blendshapes, Blendshape.MOUTH_RIGHT.value) - smileMax);
+      case EYE_BLINK_LEFT:
+        // Require contralateral eye relatively open.
+        return Math.max(0.f, blinkL - blinkR);
+      case EYE_BLINK_RIGHT:
+        return Math.max(0.f, blinkR - blinkL);
       case EYES_WIDE:
         return Math.max(
             safeGet(blendshapes, EYE_WIDE_LEFT_INDEX),
             safeGet(blendshapes, EYE_WIDE_RIGHT_INDEX));
       case DOUBLE_BLINK:
-        // Preview / detector score: max of both eyelids (robust to slight asymmetry).
-        return Math.max(
-            safeGet(blendshapes, EYE_BLINK_LEFT_INDEX),
-            safeGet(blendshapes, EYE_BLINK_RIGHT_INDEX));
+        // Both eyes must close; asymmetry no longer inflates the score.
+        return Math.min(blinkL, blinkR);
       default:
         return safeGet(blendshapes, shape.value);
     }

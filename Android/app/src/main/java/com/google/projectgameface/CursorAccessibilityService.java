@@ -113,6 +113,15 @@ public class CursorAccessibilityService extends AccessibilityService implements 
     /** Should we send blendshape score to front-end or not. */
     private boolean shouldSendScore = false;
 
+    /**
+     * Independent detector for DOUBLE_BLINK sensitivity preview so the green bar
+     * reflects composite progress, not a single blink raw score.
+     */
+    private final DoubleBlinkGesture scorePreviewDoubleBlink = new DoubleBlinkGesture();
+
+    /** Threshold (0–1) used by the preview double-blink detector; default 0.5. */
+    private float scorePreviewThreshold = 0.5f;
+
     @SuppressLint({"UnspecifiedRegisterReceiverFlag", "ObsoleteSdkInt"})
     private void defineAndRegisterBroadcastMessageReceivers() {
 
@@ -174,8 +183,14 @@ public class CursorAccessibilityService extends AccessibilityService implements 
             new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    shouldSendScore = intent.getBooleanExtra("enable", false);
+                    boolean enable = intent.getBooleanExtra("enable", false);
+                    shouldSendScore = enable;
                     requestedScoreBlendshapeName = intent.getStringExtra("blendshapesName");
+                    if (intent.hasExtra("threshold")) {
+                        scorePreviewThreshold = intent.getFloatExtra("threshold", 0.5f);
+                    }
+                    // Reset composite preview state on enter/exit (and on threshold refresh).
+                    scorePreviewDoubleBlink.reset();
                 }
             };
 
@@ -412,15 +427,46 @@ public class CursorAccessibilityService extends AccessibilityService implements 
             BlendshapeEventTriggerConfig.Blendshape enumValue =
                 BlendshapeEventTriggerConfig.Blendshape.valueOf(requestedScoreBlendshapeName);
 
-            float score =
-                BlendshapeEventTriggerConfig.scoreFor(
-                    enumValue, facelandmarkerHelper.getBlendshapes());
+            float[] blendshapes = facelandmarkerHelper.getBlendshapes();
+            float score = BlendshapeEventTriggerConfig.scoreFor(enumValue, blendshapes);
+
+            // DOUBLE_BLINK preview must show composite progress, not a single blink.
+            if (enumValue == BlendshapeEventTriggerConfig.Blendshape.DOUBLE_BLINK) {
+                score = previewDoubleBlinkScore(score);
+            }
+
             Intent intent = new Intent(requestedScoreBlendshapeName);
             intent.putExtra("score", score);
             sendBroadcast(intent);
         } catch (IllegalArgumentException e) {
             Log.w(TAG, "No Blendshape named " + requestedScoreBlendshapeName);
         }
+    }
+
+    /**
+     * Encode double-blink composite progress for the sensitivity bar.
+     *
+     * <p>Feeds {@code min(L,R)} into an independent {@link DoubleBlinkGesture}. A single blink
+     * must not look fully triggered; the second legal blink reaches ~1.0.
+     */
+    private float previewDoubleBlinkScore(float rawBothEyesScore) {
+        long nowMs = SystemClock.uptimeMillis();
+        boolean fired =
+            scorePreviewDoubleBlink.onScore(rawBothEyesScore, scorePreviewThreshold, nowMs);
+        if (fired) {
+            return 1.0f;
+        }
+        int pulses = scorePreviewDoubleBlink.getPulseCount();
+        if (pulses > 0) {
+            // pulseCount/required (~0.5 after first blink). Cap under the preview threshold so
+            // the green "triggered" drawable does not engage on a single blink.
+            float progress =
+                (float) pulses / (float) DoubleBlinkGesture.REQUIRED_PULSES;
+            float underThreshold = Math.max(0.f, scorePreviewThreshold - 0.01f);
+            return Math.min(progress, underThreshold);
+        }
+        // Idle / below: show raw both-eyes score (typically low when eyes open).
+        return Math.min(rawBothEyesScore, scorePreviewThreshold);
     }
 
     private void sendBroadcastServiceState(String state) {

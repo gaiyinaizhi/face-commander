@@ -64,15 +64,19 @@ public class ChooseGestureActivityTest {
     }
 
     @Test
-    public void changeGesture_selectNoneGesture_intentToMainActivity() {
-        activityCursorBinding.findViewById(R.id.tapLayout).performClick();
-        Shadows.shadowOf((Application) ApplicationProvider.getApplicationContext()).getNextStartedActivity();
-        Activity activityChooseGesture = Robolectric.buildActivity(ChooseGestureActivity.class).create().get();
+    public void changeGesture_selectNoneGesture_finishesToParentBinding() {
+        Intent launch = new Intent(ApplicationProvider.getApplicationContext(), ChooseGestureActivity.class);
+        launch.putExtra("eventType", BlendshapeEventTriggerConfig.EventType.CURSOR_TOUCH);
+        Activity activityChooseGesture =
+            Robolectric.buildActivity(ChooseGestureActivity.class, launch).create().get();
         activityChooseGesture.findViewById(R.id.none).performClick();
         activityChooseGesture.findViewById(R.id.nextBtn).performClick();
-        Intent actual = Shadows.shadowOf((Application) ApplicationProvider.getApplicationContext()).getNextStartedActivity();
-        Intent mainActivity = new Intent(activityChooseGesture, MainActivity.class);
 
-        assertEquals(actual.getComponent(), mainActivity.getComponent());
+        // NONE saves prefs then finish() — no new parent Intent / CLEAR_TASK.
+        Intent actual =
+            Shadows.shadowOf((Application) ApplicationProvider.getApplicationContext())
+                .getNextStartedActivity();
+        assertEquals(null, actual);
+        assertEquals(true, activityChooseGesture.isFinishing());
     }
 }

@@ -180,14 +180,14 @@ public class GestureSizeActivity extends AppCompatActivity {
             } catch (Exception e) {
                 Log.i(TAG, e.toString());
             }
-            // Go back to cursor binding page.
+            // Return to existing CursorBinding and clear ChooseGesture above it.
+            // Do not use CLEAR_TASK (would wipe MainActivity).
             Intent intent = new Intent(this, CursorBinding.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
 
             restorePreviousServiceState();
             finish();
-
-
         });
 
         findViewById(R.id.backBtn).setOnClickListener(v -> {

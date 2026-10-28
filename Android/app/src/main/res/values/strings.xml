@@ -89,6 +89,14 @@
     <string name="blendshape_raise_left_eyebrow">Raise left eyebrow</string>
     <string name="blendshape_lower_right_eyebrow">Lower right eyebrow</string>
     <string name="blendshape_lower_left_eyebrow">Lower left eyebrow</string>
+    <string name="blendshape_brows_inner_up">Raise inner brows</string>
+    <string name="blendshape_mouth_pucker">Pucker</string>
+    <string name="blendshape_smile">Smile</string>
+    <string name="blendshape_cheek_puff">Cheek puff</string>
+    <string name="blendshape_eye_blink_left">Blink left eye</string>
+    <string name="blendshape_eye_blink_right">Blink right eye</string>
+    <string name="blendshape_eyes_wide">Eyes wide</string>
+    <string name="blendshape_double_blink">Double blink ×2</string>
     <string name="blendshape_none_short">None</string>
 
     <!-- Gesture size -->

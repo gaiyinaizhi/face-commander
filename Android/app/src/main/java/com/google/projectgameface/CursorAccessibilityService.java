@@ -412,7 +412,9 @@ public class CursorAccessibilityService extends AccessibilityService implements 
             BlendshapeEventTriggerConfig.Blendshape enumValue =
                 BlendshapeEventTriggerConfig.Blendshape.valueOf(requestedScoreBlendshapeName);
 
-            float score = facelandmarkerHelper.getBlendshapes()[enumValue.value];
+            float score =
+                BlendshapeEventTriggerConfig.scoreFor(
+                    enumValue, facelandmarkerHelper.getBlendshapes());
             Intent intent = new Intent(requestedScoreBlendshapeName);
             intent.putExtra("score", score);
             sendBroadcast(intent);

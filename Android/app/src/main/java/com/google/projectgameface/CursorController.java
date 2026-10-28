@@ -20,6 +20,7 @@ package com.google.projectgameface;
 import static androidx.core.math.MathUtils.clamp;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -92,6 +93,9 @@ public class CursorController {
 
     /** Keep tracking if any event is triggered. */
     private final HashMap<BlendshapeEventTriggerConfig.EventType, Boolean> blendshapeEventTriggeredTracker = new HashMap<>();
+
+    /** Per-event double-blink composite detectors (ticket 06). */
+    private final HashMap<BlendshapeEventTriggerConfig.EventType, DoubleBlinkGesture> doubleBlinkDetectors = new HashMap<>();
 
     /**
      * Calculate cursor movement and keeping track of face action events.
@@ -170,6 +174,13 @@ public class CursorController {
      * @return EventType that should be trigger. Will be {@link BlendshapeEventTriggerConfig.EventType#NONE} if no valid event.
      */
     public BlendshapeEventTriggerConfig.EventType createCursorEvent(float[] blendshapes) {
+        return createCursorEvent(blendshapes, SystemClock.uptimeMillis());
+    }
+
+    /**
+     * Create performable event from blendshapes. {@code nowMs} is injectable for tests.
+     */
+    public BlendshapeEventTriggerConfig.EventType createCursorEvent(float[] blendshapes, long nowMs) {
         // Loop over registered event-blendshape-threshold pairs.
         for (Map.Entry<BlendshapeEventTriggerConfig.EventType, BlendshapeEventTriggerConfig.BlendshapeAndThreshold> entry :
             blendshapeEventTriggerConfig.getAllConfig().entrySet()) {
@@ -182,7 +193,29 @@ public class CursorController {
             if (blendshapeEventTriggeredTracker.get(eventType) == null) {
                 continue;
             }
-            float score = blendshapes[blendshapeAndThreshold.shape().value];
+
+            float score =
+                BlendshapeEventTriggerConfig.scoreFor(blendshapeAndThreshold.shape(), blendshapes);
+
+            // Ticket 06: double blink completes at rising-edge layer; intermediate pulses return
+            // NONE so ActionCooldown is never started for them.
+            if (blendshapeAndThreshold.shape()
+                == BlendshapeEventTriggerConfig.Blendshape.DOUBLE_BLINK) {
+                DoubleBlinkGesture detector = doubleBlinkDetectors.get(eventType);
+                if (detector == null) {
+                    detector = new DoubleBlinkGesture();
+                    doubleBlinkDetectors.put(eventType, detector);
+                }
+                if (detector.onScore(score, blendshapeAndThreshold.threshold(), nowMs)) {
+                    if (eventType == BlendshapeEventTriggerConfig.EventType.CURSOR_RESET) {
+                        isTeleportMode = true;
+                        teleportShadowX = (double) this.screenWidth / 2;
+                        teleportShadowY = (double) this.screenHeight / 2;
+                    }
+                    return eventType;
+                }
+                continue;
+            }
 
             boolean eventTriggered = Boolean.TRUE.equals(blendshapeEventTriggeredTracker.get(eventType));
 

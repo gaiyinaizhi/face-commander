@@ -146,8 +146,11 @@ public class ChooseGestureActivity extends AppCompatActivity {
         // Big layout contain face gesture buttons.
         ConstraintLayout gestureLayout = findViewById(R.id.gestureLayout);
 
-        // For each face gesture button.
-        for (int gestureButtonIndexInUi = 0; gestureButtonIndexInUi < gestureLayout.getChildCount(); gestureButtonIndexInUi++) {
+        BlendshapeEventTriggerConfig.migrateBlendshapeUiIndicesIfNeeded(preferences);
+        int gestureCount = BlendshapeEventTriggerConfig.BLENDSHAPE_FROM_ORDER_IN_UI.size();
+
+        // For each face gesture button (skip layout spacers past the blendshape list).
+        for (int gestureButtonIndexInUi = 0; gestureButtonIndexInUi < gestureCount; gestureButtonIndexInUi++) {
             ViewGroup oneGestureBox = (ViewGroup) gestureLayout.getChildAt(gestureButtonIndexInUi);
 
             resetButtonStyle(oneGestureBox);
@@ -156,8 +159,8 @@ public class ChooseGestureActivity extends AppCompatActivity {
             for (BlendshapeEventTriggerConfig.EventType checkingEventType : BlendshapeEventTriggerConfig.EventType.values())
             {
                 // Load binding config.
-                int boundGestureIndex = preferences.getInt(checkingEventType.toString(),
-                    BlendshapeEventTriggerConfig.BLENDSHAPE_FROM_ORDER_IN_UI.indexOf(BlendshapeEventTriggerConfig.Blendshape.NONE));
+                int boundGestureIndex = BlendshapeEventTriggerConfig.getBlendshapeIndexInUi(
+                    preferences, checkingEventType.toString());
                 BlendshapeEventTriggerConfig.Blendshape boundedBlendshape = BlendshapeEventTriggerConfig.BLENDSHAPE_FROM_ORDER_IN_UI
                     .get(boundGestureIndex);
 
@@ -183,9 +186,10 @@ public class ChooseGestureActivity extends AppCompatActivity {
         }
 
         // None button case need special handling.
-        ViewGroup noneGestureBox = (ViewGroup) gestureLayout.getChildAt(BlendshapeEventTriggerConfig.BLENDSHAPE_FROM_ORDER_IN_UI.indexOf(BlendshapeEventTriggerConfig.Blendshape.NONE));
-        int boundGestureIndex = preferences.getInt(pageEventType.toString(), BlendshapeEventTriggerConfig.BLENDSHAPE_FROM_ORDER_IN_UI.indexOf(BlendshapeEventTriggerConfig.Blendshape.NONE));
-        if (boundGestureIndex == BlendshapeEventTriggerConfig.BLENDSHAPE_FROM_ORDER_IN_UI.indexOf(BlendshapeEventTriggerConfig.Blendshape.NONE))
+        ViewGroup noneGestureBox = (ViewGroup) gestureLayout.getChildAt(BlendshapeEventTriggerConfig.noneUiIndex());
+        int boundGestureIndex = BlendshapeEventTriggerConfig.getBlendshapeIndexInUi(
+            preferences, pageEventType.toString());
+        if (boundGestureIndex == BlendshapeEventTriggerConfig.noneUiIndex())
         {
             changeButtonStyleToCurrent(noneGestureBox);
         }
@@ -239,8 +243,8 @@ public class ChooseGestureActivity extends AppCompatActivity {
 
 
 
-        preSelectButtonIndex = preferences.getInt(pageEventType.toString(),
-                BlendshapeEventTriggerConfig.BLENDSHAPE_FROM_ORDER_IN_UI.indexOf(BlendshapeEventTriggerConfig.Blendshape.NONE));
+        preSelectButtonIndex = BlendshapeEventTriggerConfig.getBlendshapeIndexInUi(
+                preferences, pageEventType.toString());
 
 
         findViewById(R.id.backBtn).setOnClickListener(v -> {
@@ -285,7 +289,8 @@ public class ChooseGestureActivity extends AppCompatActivity {
 
 
     private void setupUi(){
-        for (int i = 0; i < chooseGestureLayout.getChildCount(); i++) {
+        int gestureCount = BlendshapeEventTriggerConfig.BLENDSHAPE_FROM_ORDER_IN_UI.size();
+        for (int i = 0; i < gestureCount; i++) {
             final int position = i;
             View childView = chooseGestureLayout.getChildAt(i);
 
